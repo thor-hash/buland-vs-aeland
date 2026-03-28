@@ -1,0 +1,4 @@
+server.py
+.claude/
+.DS_Store
+node_modules/

@@ -1,0 +1,9 @@
+{
+  "name": "buland-vs-aeland",
+  "version": "0.1.0",
+  "description": "Búland vs Æland – Hver verður giftari?",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site – no build needed'"
+  }
+}
