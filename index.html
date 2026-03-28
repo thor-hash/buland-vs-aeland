@@ -6,10 +6,819 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Búland vs Æland</title>
-  <link rel="stylesheet" href="src/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --buland-primary: #1B3A5C;
+  --buland-secondary: #4A7C59;
+  --aeland-primary: #D4A843;
+  --aeland-secondary: #E8732A;
+  --parchment: #F5F0E8;
+  --stat-emotional: #C0392B;
+  --stat-money: #2980B9;
+  --stat-happiness: #F1C40F;
+  --stat-sex: #8B6914;
+  --text-dark: #2C1810;
+  --text-light: #F5F0E8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  width:100%; height:100%; overflow:hidden;
+  background:#0a0a0a; font-family:'Inter',sans-serif;
+  touch-action:none; -webkit-tap-highlight-color:transparent;
+  user-select:none; -webkit-user-select:none;
+}
+#game-root { width:100vw; height:100vh; height:100dvh; position:relative; overflow:hidden; }
+.scene {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  opacity:0; transition:opacity 0.4s ease; pointer-events:none;
+}
+.scene.active { opacity:1; pointer-events:all; }
+
+/* MAIN MENU */
+.main-menu {
+  background:linear-gradient(180deg,#1a0e2e 0%,#2d1b4e 30%,#1B3A5C 60%,#0a1628 100%);
+  align-items:center; justify-content:center; text-align:center; gap:1.2rem; padding:2rem;
+}
+.main-menu__title {
+  font-family:'MedievalSharp',cursive;
+  font-size:clamp(2rem,8vw,4rem);
+  color:var(--aeland-primary);
+  text-shadow:0 0 20px rgba(212,168,67,0.5),0 2px 4px rgba(0,0,0,0.8);
+  line-height:1.1;
+}
+.main-menu__vs {
+  font-size:clamp(1.5rem,6vw,3rem);
+  color:var(--aeland-secondary);
+  text-shadow:0 0 15px rgba(232,115,42,0.6);
+}
+.main-menu__subtitle {
+  font-family:'MedievalSharp',cursive;
+  font-size:clamp(1rem,4vw,1.8rem);
+  color:var(--parchment); opacity:0.8;
+}
+.team-select { display:flex; gap:1rem; width:100%; max-width:500px; flex-wrap:wrap; justify-content:center; }
+.team-btn {
+  flex:1; min-width:140px; padding:1.2rem 1rem;
+  border:2px solid; border-radius:12px;
+  font-family:'MedievalSharp',cursive; font-size:clamp(1.1rem,3.5vw,1.5rem);
+  cursor:pointer; transition:all 0.3s ease;
+}
+.team-btn:active { transform:scale(0.96); }
+.team-btn--buland {
+  background:linear-gradient(135deg,#1B3A5C,#2a5a3a);
+  border-color:var(--buland-secondary); color:var(--text-light);
+}
+.team-btn--aeland {
+  background:linear-gradient(135deg,#D4A843,#E8732A);
+  border-color:#f0c060; color:var(--text-dark);
+}
+
+/* CHARACTER SELECT */
+.char-select { background:var(--parchment); padding:1rem; gap:0.5rem; }
+.char-select__header { text-align:center; padding:0.5rem 0; }
+.char-select__team-name {
+  font-family:'MedievalSharp',cursive; font-size:clamp(1.3rem,5vw,2rem);
+}
+.char-select__team-name.buland { color:var(--buland-primary); }
+.char-select__team-name.aeland { color:var(--aeland-secondary); }
+.char-select__instruction { font-size:0.85rem; color:#666; margin-top:0.2rem; }
+.char-grid {
+  flex:1; display:flex; flex-direction:column; gap:0.6rem;
+  overflow-y:auto; padding:0.5rem 0; -webkit-overflow-scrolling:touch;
+}
+.char-card {
+  display:flex; gap:0.8rem; align-items:center;
+  background:#fff; border-radius:12px; padding:0.8rem;
+  border:2px solid transparent; box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  cursor:pointer; transition:all 0.2s; min-height:80px;
+}
+.char-card:active { transform:scale(0.98); }
+.char-card.selected { border-color:var(--aeland-primary); box-shadow:0 2px 12px rgba(212,168,67,0.3); }
+.char-card.selected.buland-team { border-color:var(--buland-secondary); box-shadow:0 2px 12px rgba(74,124,89,0.3); }
+.char-avatar {
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.6rem; flex-shrink:0; border:2px solid rgba(0,0,0,0.1);
+}
+.char-info { flex:1; min-width:0; }
+.char-info__name { font-family:'MedievalSharp',cursive; font-size:1.1rem; font-weight:700; color:var(--text-dark); }
+.char-info__role { font-size:0.75rem; color:#888; margin-bottom:0.2rem; }
+.char-info__ability { font-size:0.7rem; color:var(--buland-primary); font-weight:600; }
+.char-info__stats { display:flex; gap:0.3rem; margin-top:0.3rem; }
+.char-stat-pip { width:8px; height:8px; border-radius:50%; opacity:0.3; }
+.char-stat-pip.strong { opacity:1; }
+.char-select__confirm {
+  padding:1rem 2rem; border:none; border-radius:12px;
+  font-family:'MedievalSharp',cursive; font-size:1.2rem;
+  cursor:pointer; color:#fff; width:100%; transition:all 0.2s;
+  opacity:0.4; pointer-events:none;
+}
+.char-select__confirm.ready { opacity:1; pointer-events:all; }
+.char-select__confirm.buland-team { background:linear-gradient(135deg,var(--buland-primary),var(--buland-secondary)); }
+.char-select__confirm.aeland-team { background:linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary)); }
+.char-select__confirm:active { transform:scale(0.97); }
+.char-select__back { background:none; border:none; color:#888; font-size:0.85rem; cursor:pointer; padding:0.5rem; text-decoration:underline; }
+
+/* MAP VIEW */
+.map-view { background:#0a1628; height:100%; }
+.map-container { flex:1; position:relative; overflow:hidden; touch-action:pan-x pan-y pinch-zoom; min-height:0; }
+.map-image { position:absolute; transform-origin:0 0; will-change:transform; border-radius:8px; }
+.map-image img { display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+.location-pin {
+  position:absolute; transform:translate(-50%,-100%);
+  cursor:pointer; z-index:10; transition:transform 0.2s;
+  padding:8px; /* larger tap target */
+}
+.location-pin:active { transform:translate(-50%,-100%) scale(1.2); }
+.location-pin__marker {
+  width:44px; height:44px; border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg); display:flex; align-items:center; justify-content:center;
+  border:2px solid rgba(255,255,255,0.8);
+  box-shadow:0 2px 8px rgba(0,0,0,0.5);
+}
+.location-pin__marker span { transform:rotate(45deg); font-size:20px; }
+.location-pin__label {
+  position:absolute; top:calc(100% - 4px); left:50%; transform:translateX(-50%);
+  white-space:nowrap; font-size:11px; font-weight:700; color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,0.9),0 0 6px rgba(0,0,0,0.7);
+  pointer-events:none; background:rgba(0,0,0,0.45); padding:1px 6px; border-radius:4px;
+}
+.location-pin.current .location-pin__marker { animation:pulse-pin 1.5s ease-in-out infinite; }
+@keyframes pulse-pin {
+  0%,100% { box-shadow:0 0 0 0 rgba(255,255,255,0.4); }
+  50% { box-shadow:0 0 0 8px rgba(255,255,255,0); }
+}
+.player-marker {
+  position:absolute; transform:translate(-50%,-50%);
+  z-index:15; pointer-events:none;
+  transition:left 0.8s ease,top 0.8s ease;
+}
+.player-marker__dot {
+  width:20px; height:20px; border-radius:50%;
+  border:3px solid #fff;
+  box-shadow:0 0 10px rgba(255,255,255,0.5),0 2px 8px rgba(0,0,0,0.5);
+  animation:player-breathe 2s ease-in-out infinite;
+}
+@keyframes player-breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+.map-switch {
+  position:absolute; top:12px; right:12px; z-index:20;
+  background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.2); border-radius:10px;
+  padding:8px 14px; color:#fff; font-size:0.8rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.map-switch:active { transform:scale(0.95); }
+
+/* HUD */
+.hud {
+  position:relative; z-index:20;
+  background:rgba(10,10,10,0.85); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  padding:8px 12px; display:flex; flex-direction:column; gap:4px;
+  transition:all 0.3s;
+}
+.hud.collapsed { padding:4px 12px; }
+.hud.collapsed .hud__stats { display:none; }
+.hud__top { display:flex; align-items:center; justify-content:space-between; }
+.hud__character { display:flex; align-items:center; gap:8px; }
+.hud__avatar {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; border:2px solid rgba(255,255,255,0.3);
+}
+.hud__name { font-family:'MedievalSharp',cursive; color:#fff; font-size:0.95rem; }
+.hud__team { font-size:0.65rem; opacity:0.6; color:#fff; }
+.hud__day { font-family:'MedievalSharp',cursive; color:var(--aeland-primary); font-size:0.85rem; }
+.hud__toggle { background:none; border:none; color:rgba(255,255,255,0.5); font-size:1rem; cursor:pointer; padding:4px; }
+.hud__stats { display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; }
+.stat-bar { display:flex; align-items:center; gap:8px; }
+.stat-bar__icon { font-size:1rem; width:22px; text-align:center; }
+.stat-bar__track { flex:1; height:14px; background:rgba(255,255,255,0.15); border-radius:7px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+.stat-bar__fill {
+  height:100%; border-radius:7px; transition:width 0.6s ease; position:relative;
+  box-shadow:0 0 6px rgba(255,255,255,0.2);
+}
+.stat-bar__fill::after {
+  content:''; position:absolute; right:0; top:0; bottom:0; width:10px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4));
+  border-radius:0 7px 7px 0;
+}
+.stat-bar__value { font-size:0.85rem; color:#fff; width:36px; text-align:right; font-weight:700; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
+
+/* LOCATION PANEL */
+.location-panel {
+  position:absolute; bottom:0; left:0; right:0; z-index:25;
+  background:rgba(10,10,10,0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-top:1px solid rgba(255,255,255,0.1);
+  border-radius:16px 16px 0 0; padding:1.2rem;
+  transform:translateY(100%); transition:transform 0.3s ease;
+}
+.location-panel.open { transform:translateY(0); }
+.location-panel__handle { width:40px; height:4px; background:rgba(255,255,255,0.2); border-radius:2px; margin:0 auto 1rem; }
+.location-panel__name { font-family:'MedievalSharp',cursive; color:#fff; font-size:1.3rem; margin-bottom:0.3rem; }
+.location-panel__desc { color:rgba(255,255,255,0.6); font-size:0.8rem; line-height:1.4; margin-bottom:1rem; }
+.location-panel__actions { display:flex; gap:0.5rem; }
+.location-panel__btn {
+  flex:1; padding:0.7rem; border:none; border-radius:10px;
+  font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.2s;
+}
+.location-panel__btn:active { transform:scale(0.96); }
+.location-panel__btn--travel { background:linear-gradient(135deg,var(--buland-secondary),#3a9a5a); color:#fff; }
+.location-panel__btn--cancel { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.7); }
+
+/* TRAVEL OVERLAY */
+.travel-overlay {
+  position:absolute; inset:0; z-index:50;
+  background:rgba(0,0,0,0.8);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1rem; opacity:0; pointer-events:none; transition:opacity 0.3s;
+}
+.travel-overlay.active { opacity:1; pointer-events:all; }
+.travel-overlay__text { font-family:'MedievalSharp',cursive; color:var(--aeland-primary); font-size:1.3rem; }
+.travel-overlay__dots span {
+  display:inline-block; width:8px; height:8px;
+  background:var(--aeland-primary); border-radius:50%; margin:0 4px;
+  animation:dot-bounce 1s ease-in-out infinite;
+}
+.travel-overlay__dots span:nth-child(2) { animation-delay:0.2s; }
+.travel-overlay__dots span:nth-child(3) { animation-delay:0.4s; }
+@keyframes dot-bounce {
+  0%,80%,100% { transform:translateY(0); opacity:0.3; }
+  40% { transform:translateY(-8px); opacity:1; }
+}
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:2px; }
+@supports (padding:env(safe-area-inset-top)) {
+  .hud { padding-top:calc(8px + env(safe-area-inset-top)); }
+  .location-panel { padding-bottom:calc(1.2rem + env(safe-area-inset-bottom)); }
+}
+  </style>
 </head>
 <body>
-  <div id="game-root"></div>
-  <script type="module" src="src/main.js"></script>
+<div id="game-root"></div>
+
+<script>
+// ===== GAME DATA =====
+const TEAMS = {
+  buland: {
+    id:'buland', name:'Búland', subtitle:'Ævintýraland', emoji:'🏔️',
+    colors:{ primary:'#1B3A5C', secondary:'#4A7C59' },
+    goalName:'Arion Banki stöðu',
+  },
+  aeland: {
+    id:'aeland', name:'Æland', subtitle:'Guð Blessi', emoji:'☀️',
+    colors:{ primary:'#D4A843', secondary:'#E8732A' },
+    goalName:'Guð Blessi stöðu',
+  },
+};
+
+const CHARACTERS = [
+  { id:'benni', name:'Benni', team:'buland', role:'Sölukóngur', emoji:'💼', bg:'#2E7D32',
+    ability:'Fossvogur Hustle', abilityDesc:'Bonus í öllum söluathöfnum',
+    strengths:['money','happiness'], weakness:'Lágt Emotional Stability ef hann missir söluna' },
+  { id:'thor', name:'Thor', team:'buland', role:'Sterkur & beinn', emoji:'⚡', bg:'#1565C0',
+    ability:'Golfkylfu Slam', abilityDesc:'Hrindir Hraunvelli í eldgos',
+    strengths:['emotional','sex'], weakness:'Lágur Happiness ef ekkert er að gerast' },
+  { id:'lena', name:'Lena', team:'buland', role:'Róin & smart', emoji:'🧘', bg:'#7B1FA2',
+    ability:'Emotional Shield', abilityDesc:'Róar allar deilur og dreka-drama',
+    strengths:['emotional'], weakness:'Lág Money generation' },
+  { id:'haddi', name:'Haddi', team:'buland', role:'Verksmiðjueigandi', emoji:'🏭', bg:'#455A64',
+    ability:'Marel Multiplier', abilityDesc:'Money farm úr fiski',
+    strengths:['money'], weakness:'Lágt Sex/Happiness' },
+  { id:'dori', name:'Dóri', team:'buland', role:'Leyndur charmer', emoji:'🎭', bg:'#C62828',
+    ability:'Secret Afgreiðsla', abilityDesc:'Extra valkostir í Fossvogi',
+    strengths:['sex'], weakness:'Of mikil notkun lækkar Emotional Stability' },
+  { id:'gledi-asgeir', name:'Gleði-Ásgeir', team:'aeland', role:'Party leader', emoji:'🕺', bg:'#E65100',
+    ability:'Gleði-scena Boost', abilityDesc:'Dansar, Happiness + Sex til allra',
+    strengths:['happiness','sex'], weakness:'Lágt Money' },
+  { id:'bila-asgeir', name:'Bíla-Ásgeir', team:'aeland', role:'Speed demon', emoji:'🏎️', bg:'#D32F2F',
+    ability:'Sportbíll Turbo', abilityDesc:'Bílar verða mounts með kostum',
+    strengths:['money','sex'], weakness:'Lágt Emotional Stability' },
+  { id:'mundi', name:'Mundi', team:'aeland', role:'Sætindakóngur', emoji:'🍬', bg:'#F06292',
+    ability:'Candy-Cane High', abilityDesc:'Happiness + Sex í einu',
+    strengths:['happiness','sex'], weakness:'Sykursjúkdóms debuff við ofnotkun' },
+  { id:'alli', name:'Alli', team:'aeland', role:'Ölkóngur', emoji:'🍺', bg:'#F9A825',
+    ability:'Beer Buff', abilityDesc:'Emotional Stability + Happiness',
+    strengths:['emotional','happiness'], weakness:'Veikur í Sex og Money' },
+  { id:'leynigestur', name:'Leynigestur', team:'aeland', role:'Leyndur', emoji:'👤', bg:'#37474F',
+    ability:'Full Giftur Mode', abilityDesc:'200% boost í öllum kostum',
+    strengths:['emotional','money','happiness','sex'], weakness:'Birtist aðeins þegar allir kostir yfir 80%',
+    locked:true, unlockText:'Opnast þegar allir kostir ná 80%' },
+];
+
+const LOCATIONS = {
+  // ÆLAND — tighter layout for mobile (within 15-85% range)
+  'glad-hofn':     { id:'glad-hofn',     name:'Glöð-Höfn',         map:'aeland', x:20, y:45, icon:'🎉', color:'#E8732A', desc:'Party-höfuðborg Ælands. Alli ráða ölgerðinni.', boost:{happiness:10,emotional:5} },
+  'nammi-hofn':    { id:'nammi-hofn',    name:'Nammi-Höfn',        map:'aeland', x:40, y:65, icon:'🍬', color:'#F06292', desc:'Sætindaverðslu Munda. Candy-Cane Forest nálægt.', boost:{happiness:8,sex:6} },
+  'wonderville':   { id:'wonderville',   name:'Wonderville',       map:'aeland', x:50, y:20, icon:'🌋', color:'#FF5722', desc:'Virkt eldfjall með gleðisprengingum.', boost:{happiness:12} },
+  'gledi-scena':   { id:'gledi-scena',   name:'Gleði-Scena',       map:'aeland', x:35, y:35, icon:'💃', color:'#D4A843', desc:'Aðal dans- og keppnissvæði.', boost:{happiness:10,sex:8} },
+  'bilar-og-konur':{ id:'bilar-og-konur',name:'Bílar & Konur',     map:'aeland', x:65, y:55, icon:'🏎️', color:'#D32F2F', desc:'Bíla-Ásgeirs rign. Sportbílakeppnir.', boost:{money:6,sex:10} },
+  'gullna-fjollin':{ id:'gullna-fjollin',name:'Gullna Fjöllin',    map:'aeland', x:60, y:20, icon:'⛏️', color:'#FFC107', desc:'Gullnámur – Money farm svæði.', boost:{money:15} },
+  'golflevsi':     { id:'golflevsi',     name:'Golflevsi',         map:'aeland', x:78, y:40, icon:'⛳', color:'#4CAF50', desc:'Golf mini-game, Happiness boost.', boost:{happiness:8,money:4} },
+  'solgeislavellir':{ id:'solgeislavellir',name:'Sölgeislavellir', map:'aeland', x:50, y:45, icon:'☀️', color:'#FFD54F', desc:'Sunny area, +Happiness passive aura.', boost:{happiness:6} },
+  'stacrons-castle':{ id:'stacrons-castle',name:"Joy-Castle",      map:'aeland', x:75, y:22, icon:'🏰', color:'#9C27B0', desc:'High-level dungeon/keppnissvæði.', boost:{emotional:8,happiness:8} },
+  'kaupmannahofn': { id:'kaupmannahofn', name:'Kaupmannahöfn',     map:'aeland', x:80, y:65, icon:'🚢', color:'#2196F3', desc:'Viðskiptahöfn, Money trading.', boost:{money:12} },
+  // BÚLAND — tighter layout for mobile
+  'bulandstindur': { id:'bulandstindur', name:'Búlandstindur',     map:'buland', x:50, y:18, icon:'🏔️', color:'#90CAF9', desc:'Heilagt fjall – Arion Banki sér þaðan. Sigursvæði.', boost:{emotional:15} },
+  'marlbahofn':    { id:'marlbahofn',    name:'Marlbahöfn',        map:'buland', x:30, y:65, icon:'⚓', color:'#5C8AAE', desc:'Hafnarborg og Marel Factory – Money hub.', boost:{money:10} },
+  'marel-factory': { id:'marel-factory', name:'Marel Factory',     map:'buland', x:38, y:52, icon:'🏭', color:'#607D8B', desc:'Verksmiðja Hadda. Money farm með fiskvinnslu.', boost:{money:14} },
+  'budarvik':      { id:'budarvik',      name:'Búðarvík',          map:'buland', x:22, y:45, icon:'🏘️', color:'#8D6E63', desc:'Byrjunarbær, grunnskráning og tutorial.', boost:{emotional:5,happiness:5} },
+  'hraunvollur':   { id:'hraunvollur',   name:'Hraunvöllur',       map:'buland', x:58, y:42, icon:'⛳', color:'#4A7C59', desc:'Golf mini-game á hrauni.', boost:{happiness:8,money:6} },
+  'macronland':    { id:'macronland',    name:'Macronland',        map:'buland', x:18, y:28, icon:'🇫🇷', color:'#1976D2', desc:'Frönsku svæðið, diplomatískar keppnir.', boost:{money:8,emotional:4} },
+  'frakkagolf':    { id:'frakkagolf',    name:'Frakkagolf',        map:'buland', x:25, y:35, icon:'🏌️', color:'#2E7D32', desc:'Premium golf – há Money, lág Sex.', boost:{money:10} },
+  'dimmuskogur':   { id:'dimmuskogur',   name:'Dimmuskógur',       map:'buland', x:68, y:35, icon:'🌲', color:'#1B5E20', desc:'Dökkur skógur – Emotional Stability challenges.', boost:{emotional:12} },
+  'holmsbaer':     { id:'holmsbaer',     name:'Hólmsbær',          map:'buland', x:45, y:50, icon:'🏪', color:'#795548', desc:'Miðbær Búlands, shops og NPC samskipti.', boost:{money:5,happiness:5} },
+  'aevintyra-skogur':{ id:'aevintyra-skogur',name:'Ævintýraskógur',map:'buland', x:72, y:50, icon:'🧙', color:'#7E57C2', desc:'Ævintýrasvæði, quests og power-ups.', boost:{emotional:6,happiness:6} },
+  'fossvogur':     { id:'fossvogur',     name:'Fossvogur',         map:'buland', x:32, y:78, icon:'🏠', color:'#E8732A', desc:'SIGNATURE: Side Hustle – seldu treyjur húsmæðrum!', boost:{sex:8,money:8}, special:true },
+  'gulla-golfvollur':{ id:'gulla-golfvollur',name:'Gullni Golf',   map:'buland', x:78, y:28, icon:'💰', color:'#FFC107', desc:'Gulllindir og golfvöllur – Money.', boost:{money:10} },
+  'vatnsenda':     { id:'vatnsenda',     name:'Vatnsenda',         map:'buland', x:82, y:18, icon:'🌊', color:'#0277BD', desc:'Norðursvæði, hættulegt en há rewards.', boost:{money:12,emotional:8} },
+};
+
+const START_LOCATIONS = { buland:'budarvik', aeland:'glad-hofn' };
+
+const STAT_META = [
+  { key:'emotional', icon:'❤️', color:'var(--stat-emotional)', label:'Emotional Stability' },
+  { key:'money',     icon:'💰', color:'var(--stat-money)',     label:'Money' },
+  { key:'happiness', icon:'😊', color:'var(--stat-happiness)', label:'Happiness' },
+  { key:'sex',       icon:'🔥', color:'var(--stat-sex)',       label:'Sex' },
+];
+const STAT_KEYS = ['emotional','money','happiness','sex'];
+
+// ===== STATE =====
+const state = {
+  team:null, character:null, day:1,
+  currentLocation:null, currentMap:null,
+  stats:{ emotional:30, money:20, happiness:35, sex:15 },
+  visitedLocations:[],
+};
+const listeners = new Map();
+function on(key, fn) {
+  if (!listeners.has(key)) listeners.set(key, new Set());
+  listeners.get(key).add(fn);
+}
+function notify(key) {
+  const fns = listeners.get(key);
+  if (fns) fns.forEach(fn => fn(state[key]));
+}
+function setStat(k, v) { state.stats[k] = Math.max(0, Math.min(100, v)); notify('stats'); }
+function addStat(k, amt) { setStat(k, state.stats[k] + amt); }
+function saveGame() { try { localStorage.setItem('bva-save', JSON.stringify(state)); } catch(e){} }
+function loadGame() {
+  try {
+    const d = JSON.parse(localStorage.getItem('bva-save'));
+    if (d && d.character) { Object.assign(state, d); return true; }
+  } catch(e){}
+  return false;
+}
+
+// ===== SCENE MANAGER =====
+const root = document.getElementById('game-root');
+const scenes = {};
+let currentScene = null;
+
+function registerScene(name, s) { scenes[name] = s; }
+function goScene(name, data) {
+  if (currentScene && scenes[currentScene]) {
+    scenes[currentScene].el?.classList.remove('active');
+  }
+  currentScene = name;
+  const s = scenes[name];
+  if (!s.el) {
+    s.el = s.create();
+    s.el.classList.add('scene');
+    root.appendChild(s.el);
+  }
+  if (s.onEnter) s.onEnter(data);
+  requestAnimationFrame(() => s.el.classList.add('active'));
+}
+
+// ===== MAIN MENU =====
+registerScene('mainMenu', {
+  create() {
+    const el = document.createElement('div');
+    el.className = 'main-menu';
+    el.innerHTML = `
+      <div style="opacity:0.4;font-size:3rem;">⚔️</div>
+      <h1 class="main-menu__title">BÚLAND</h1>
+      <div class="main-menu__vs">vs</div>
+      <h1 class="main-menu__title" style="color:var(--buland-secondary)">ÆLAND</h1>
+      <p class="main-menu__subtitle">Hver verður giftari?</p>
+      <div style="height:1rem"></div>
+      <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Veldu lið til að byrja</p>
+      <div class="team-select">
+        <button class="team-btn team-btn--buland" data-team="buland">🏔️ Búland</button>
+        <button class="team-btn team-btn--aeland" data-team="aeland">☀️ Æland</button>
+      </div>
+    `;
+    el.querySelectorAll('.team-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.team = btn.dataset.team;
+        goScene('charSelect', { team: btn.dataset.team });
+      });
+    });
+    return el;
+  }
+});
+
+// ===== CHARACTER SELECT =====
+registerScene('charSelect', {
+  create() {
+    const el = document.createElement('div');
+    el.className = 'char-select';
+    el.innerHTML = `
+      <div class="char-select__header">
+        <div class="char-select__team-name"></div>
+        <div class="char-select__instruction">Veldu persónu</div>
+      </div>
+      <div class="char-grid"></div>
+      <button class="char-select__confirm">Velja</button>
+      <button class="char-select__back">← Til baka</button>
+    `;
+    el.querySelector('.char-select__back').addEventListener('click', () => goScene('mainMenu'));
+    el.querySelector('.char-select__confirm').addEventListener('click', () => {
+      if (!this._selectedId) return;
+      const char = CHARACTERS.find(c => c.id === this._selectedId);
+      if (!char || char.locked) return;
+      state.character = this._selectedId;
+      state.currentLocation = START_LOCATIONS[state.team];
+      state.currentMap = state.team;
+      const stats = { emotional:25, money:20, happiness:25, sex:15 };
+      char.strengths.forEach(s => stats[s] = Math.min(100, (stats[s]||0) + 15));
+      Object.entries(stats).forEach(([k,v]) => setStat(k,v));
+      saveGame();
+      goScene('mapView');
+    });
+    return el;
+  },
+  _selectedId: null,
+  onEnter(data) {
+    this._selectedId = null;
+    const el = this.el;
+    const team = data?.team || state.team;
+    const td = TEAMS[team];
+    const cls = team === 'buland' ? 'buland' : 'aeland';
+    const nameEl = el.querySelector('.char-select__team-name');
+    nameEl.textContent = `${td.emoji} ${td.name}`;
+    nameEl.className = `char-select__team-name ${cls}`;
+    const confirmBtn = el.querySelector('.char-select__confirm');
+    confirmBtn.className = `char-select__confirm ${cls}-team`;
+    confirmBtn.classList.remove('ready');
+    const grid = el.querySelector('.char-grid');
+    grid.innerHTML = '';
+    CHARACTERS.filter(c => c.team === team).forEach(char => {
+      const card = document.createElement('div');
+      card.className = `char-card ${cls}-team`;
+      if (char.locked) card.style.opacity = '0.5';
+      const pips = STAT_KEYS.map(s =>
+        `<div class="char-stat-pip ${char.strengths.includes(s)?'strong':''}" style="background:${
+          s==='emotional'?'var(--stat-emotional)':s==='money'?'var(--stat-money)':s==='happiness'?'var(--stat-happiness)':'var(--stat-sex)'
+        }"></div>`
+      ).join('');
+      card.innerHTML = `
+        <div class="char-avatar" style="background:${char.bg}">${char.emoji}</div>
+        <div class="char-info">
+          <div class="char-info__name">${char.name}${char.locked?' 🔒':''}</div>
+          <div class="char-info__role">${char.role}</div>
+          <div class="char-info__ability">${char.ability}</div>
+          <div class="char-info__stats">${pips}</div>
+        </div>
+      `;
+      if (!char.locked) {
+        card.addEventListener('click', () => {
+          this._selectedId = char.id;
+          grid.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          confirmBtn.classList.add('ready');
+          confirmBtn.textContent = `Velja ${char.name}`;
+        });
+      }
+      grid.appendChild(card);
+    });
+  }
+});
+
+// ===== MAP VIEW =====
+const mapState = { scale:1, x:0, y:0, isDragging:false, startX:0, startY:0, startTX:0, startTY:0, pinchDist:0, pinchScale:1, imgW:0, imgH:0 };
+let selectedLocation = null;
+
+registerScene('mapView', {
+  create() {
+    const el = document.createElement('div');
+    el.className = 'map-view';
+    el.innerHTML = `
+      <div class="hud">
+        <div class="hud__top">
+          <div class="hud__character">
+            <div class="hud__avatar"></div>
+            <div><div class="hud__name"></div><div class="hud__team"></div></div>
+          </div>
+          <div class="hud__day">Dagur 1</div>
+          <button class="hud__toggle">▼</button>
+        </div>
+        <div class="hud__stats">${STAT_META.map(s => `
+          <div class="stat-bar" data-stat="${s.key}">
+            <span class="stat-bar__icon">${s.icon}</span>
+            <div class="stat-bar__track"><div class="stat-bar__fill" style="background:${s.color};width:0%"></div></div>
+            <span class="stat-bar__value">0</span>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="map-container">
+        <div class="map-image"><img src="" alt="map" /></div>
+        <div class="player-marker"><div class="player-marker__dot"></div></div>
+      </div>
+      <button class="map-switch">🗺️ Skipta korti</button>
+      <div class="location-panel">
+        <div class="location-panel__handle"></div>
+        <div class="location-panel__name"></div>
+        <div class="location-panel__desc"></div>
+        <div class="location-panel__actions">
+          <button class="location-panel__btn location-panel__btn--cancel">Loka</button>
+          <button class="location-panel__btn location-panel__btn--travel">🚶 Ferðast</button>
+        </div>
+      </div>
+      <div class="travel-overlay">
+        <div class="travel-overlay__text">Ferðast...</div>
+        <div class="travel-overlay__dots"><span></span><span></span><span></span></div>
+      </div>
+    `;
+    // HUD toggle
+    const hud = el.querySelector('.hud');
+    const toggleBtn = el.querySelector('.hud__toggle');
+    toggleBtn.addEventListener('click', () => {
+      hud.classList.toggle('collapsed');
+      toggleBtn.textContent = hud.classList.contains('collapsed') ? '▲' : '▼';
+    });
+    // Map interaction
+    const container = el.querySelector('.map-container');
+    const mapEl = el.querySelector('.map-image');
+    container.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        mapState.isDragging = true;
+        mapState.startX = e.touches[0].clientX; mapState.startY = e.touches[0].clientY;
+        mapState.startTX = mapState.x; mapState.startTY = mapState.y;
+      } else if (e.touches.length === 2) {
+        mapState.isDragging = false;
+        mapState.pinchDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+        mapState.pinchScale = mapState.scale;
+      }
+    }, {passive:true});
+    container.addEventListener('touchmove', e => {
+      if (e.touches.length === 1 && mapState.isDragging) {
+        mapState.x = mapState.startTX + (e.touches[0].clientX - mapState.startX);
+        mapState.y = mapState.startTY + (e.touches[0].clientY - mapState.startY);
+        clampMap(container); applyTransform(mapEl);
+      } else if (e.touches.length === 2) {
+        const d = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+        mapState.scale = Math.max(0.5, Math.min(3, mapState.pinchScale * (d / mapState.pinchDist)));
+        clampMap(container); applyTransform(mapEl);
+      }
+    }, {passive:true});
+    container.addEventListener('touchend', () => { mapState.isDragging = false; }, {passive:true});
+    // Mouse drag
+    let md = false;
+    container.addEventListener('mousedown', e => {
+      md = true; mapState.startX = e.clientX; mapState.startY = e.clientY;
+      mapState.startTX = mapState.x; mapState.startTY = mapState.y;
+      container.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mousemove', e => {
+      if (!md) return;
+      mapState.x = mapState.startTX + (e.clientX - mapState.startX);
+      mapState.y = mapState.startTY + (e.clientY - mapState.startY);
+      clampMap(container); applyTransform(mapEl);
+    });
+    window.addEventListener('mouseup', () => { md = false; container.style.cursor = ''; });
+    container.addEventListener('wheel', e => {
+      e.preventDefault();
+      mapState.scale = Math.max(0.5, Math.min(3, mapState.scale * (e.deltaY > 0 ? 0.9 : 1.1)));
+      clampMap(container); applyTransform(mapEl);
+    }, {passive:false});
+    // Map switch
+    el.querySelector('.map-switch').addEventListener('click', () => {
+      const next = state.currentMap === 'buland' ? 'aeland' : 'buland';
+      state.currentMap = next;
+      loadMap(el, next);
+    });
+    // Location panel
+    const panel = el.querySelector('.location-panel');
+    panel.querySelector('.location-panel__btn--cancel').addEventListener('click', () => {
+      panel.classList.remove('open'); selectedLocation = null;
+    });
+    panel.querySelector('.location-panel__btn--travel').addEventListener('click', () => {
+      if (!selectedLocation) return;
+      panel.classList.remove('open');
+      travelTo(el, selectedLocation);
+    });
+    let sy = 0;
+    panel.addEventListener('touchstart', e => { sy = e.touches[0].clientY; }, {passive:true});
+    panel.addEventListener('touchmove', e => {
+      if (e.touches[0].clientY - sy > 50) { panel.classList.remove('open'); selectedLocation = null; }
+    }, {passive:true});
+    return el;
+  },
+  onEnter() {
+    const el = this.el;
+    updateHUD(el);
+    on('stats', () => updateHUD(el));
+    // Delay loadMap so the scene is fully visible and has dimensions
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        loadMap(el, state.currentMap || state.team);
+      }, 100);
+    });
+  }
+});
+
+function clampMap(container) {
+  const cw = container.clientWidth, ch = container.clientHeight;
+  const mw = mapState.imgW * mapState.scale, mh = mapState.imgH * mapState.scale;
+  // If map is smaller than container, center it; otherwise allow panning within bounds
+  if (mw <= cw) { mapState.x = (cw - mw) / 2; }
+  else { mapState.x = Math.min(0, Math.max(cw - mw, mapState.x)); }
+  if (mh <= ch) { mapState.y = (ch - mh) / 2; }
+  else { mapState.y = Math.min(0, Math.max(ch - mh, mapState.y)); }
+}
+function applyTransform(mapEl) {
+  mapEl.style.transform = `translate(${mapState.x}px,${mapState.y}px) scale(${mapState.scale})`;
+}
+
+function loadMap(el, mapId) {
+  const img = el.querySelector('.map-image img');
+  const mapEl = el.querySelector('.map-image');
+  const container = el.querySelector('.map-container');
+
+  function setupMap(w, h) {
+    mapState.imgW = w; mapState.imgH = h;
+    mapEl.style.width = w + 'px';
+    mapEl.style.height = h + 'px';
+    const cw = container.clientWidth, ch = container.clientHeight;
+    // Fill the screen — cover the container fully
+    mapState.scale = Math.max(ch / h, cw / w);
+    // Center the map
+    mapState.x = (cw - w * mapState.scale) / 2;
+    mapState.y = (ch - h * mapState.scale) / 2;
+    clampMap(container); applyTransform(mapEl);
+    renderPins(el, mapId); updatePlayer(el);
+  }
+
+  img.onload = () => { setupMap(img.naturalWidth, img.naturalHeight); };
+  img.onerror = () => {
+    // Fallback: styled map background sized for mobile
+    img.style.display = 'none';
+    const mapBg = mapId === 'buland'
+      ? 'radial-gradient(ellipse at 40% 30%, #2a5a3a 0%, #1B3A5C 40%, #0d2137 100%)'
+      : 'radial-gradient(ellipse at 50% 40%, #f0c050 0%, #D4A843 30%, #E8732A 70%, #a04018 100%)';
+    mapEl.style.background = mapBg;
+    mapEl.style.boxShadow = 'inset 0 0 60px rgba(0,0,0,0.3)';
+    setupMap(600, 500);
+  };
+  img.style.display = 'block';
+  img.src = mapId === 'buland' ? 'assets/maps/buland-map.jpeg' : 'assets/maps/aeland-map.jpeg';
+  const other = mapId === 'buland' ? 'aeland' : 'buland';
+  el.querySelector('.map-switch').textContent = `🗺️ ${TEAMS[other].name}`;
+}
+
+function renderPins(el, mapId) {
+  el.querySelectorAll('.location-pin').forEach(p => p.remove());
+  const mapEl = el.querySelector('.map-image');
+  Object.values(LOCATIONS).filter(l => l.map === mapId).forEach(loc => {
+    const pin = document.createElement('div');
+    pin.className = `location-pin ${loc.id === state.currentLocation ? 'current' : ''}`;
+    pin.style.left = `${loc.x}%`; pin.style.top = `${loc.y}%`;
+    pin.innerHTML = `
+      <div class="location-pin__icon">
+        <div class="location-pin__marker" style="background:${loc.color}"><span>${loc.icon}</span></div>
+      </div>
+      <div class="location-pin__label">${loc.name}</div>
+    `;
+    pin.addEventListener('click', e => { e.stopPropagation(); openPanel(el, loc); });
+    mapEl.appendChild(pin);
+  });
+}
+
+function openPanel(el, loc) {
+  selectedLocation = loc.id;
+  const panel = el.querySelector('.location-panel');
+  const isHere = loc.id === state.currentLocation;
+  panel.querySelector('.location-panel__name').textContent = `${loc.icon} ${loc.name}${loc.special?' ⭐':''}`;
+  panel.querySelector('.location-panel__desc').textContent = loc.desc;
+  const tBtn = panel.querySelector('.location-panel__btn--travel');
+  if (isHere) {
+    tBtn.textContent = '📍 Hér ertu'; tBtn.style.opacity = '0.5'; tBtn.style.pointerEvents = 'none';
+  } else {
+    tBtn.textContent = '🚶 Ferðast'; tBtn.style.opacity = '1'; tBtn.style.pointerEvents = 'all';
+    const tc = state.team === 'buland'
+      ? 'linear-gradient(135deg,var(--buland-primary),var(--buland-secondary))'
+      : 'linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary))';
+    tBtn.style.background = tc;
+  }
+  panel.classList.add('open');
+}
+
+function travelTo(el, locId) {
+  const loc = LOCATIONS[locId]; if (!loc) return;
+  const overlay = el.querySelector('.travel-overlay');
+  overlay.querySelector('.travel-overlay__text').textContent = `Ferðast til ${loc.name}...`;
+  overlay.classList.add('active');
+  setTimeout(() => {
+    state.currentLocation = locId;
+    if (loc.map !== state.currentMap) { state.currentMap = loc.map; loadMap(el, loc.map); }
+    else { renderPins(el, loc.map); }
+    updatePlayer(el);
+    // Calculate and apply stat boosts
+    const gains = {};
+    if (loc.boost) {
+      Object.entries(loc.boost).forEach(([k,v]) => {
+        const amt = Math.floor(v*(0.5+Math.random()*0.5));
+        gains[k] = amt;
+        addStat(k, amt);
+      });
+    }
+    if (!state.visitedLocations.includes(locId)) state.visitedLocations.push(locId);
+    updateHUD(el);
+    saveGame();
+    // Show arrival screen with stat gains
+    showArrival(el, loc, gains);
+  }, 1200);
+}
+
+function showArrival(el, loc, gains) {
+  const overlay = el.querySelector('.travel-overlay');
+  const STAT_ICONS = {emotional:'❤️',money:'💰',happiness:'😊',sex:'🔥'};
+  const STAT_COLORS = {emotional:'var(--stat-emotional)',money:'var(--stat-money)',happiness:'var(--stat-happiness)',sex:'var(--stat-sex)'};
+  const gainHtml = Object.entries(gains).map(([k,v]) =>
+    `<span style="display:inline-block;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.1);margin:3px;font-size:0.9rem;">${STAT_ICONS[k]} +${v}%</span>`
+  ).join('');
+  overlay.innerHTML = `
+    <div style="font-size:2rem;">${loc.icon}</div>
+    <div class="travel-overlay__text">${loc.name}</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;max-width:280px;text-align:center;">${loc.desc}</div>
+    <div style="margin-top:0.5rem;">${gainHtml || '<span style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Enginn stat boost</span>'}</div>
+    <button onclick="this.closest('.travel-overlay').classList.remove('active')" style="
+      margin-top:1rem;padding:0.7rem 2rem;border:none;border-radius:10px;
+      background:linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary));
+      color:white;font-family:'MedievalSharp',cursive;font-size:1rem;cursor:pointer;
+    ">Halda áfram</button>
+  `;
+  // Restore overlay template after close
+  const restore = () => {
+    if (!overlay.classList.contains('active')) {
+      overlay.innerHTML = `
+        <div class="travel-overlay__text">Ferðast...</div>
+        <div class="travel-overlay__dots"><span></span><span></span><span></span></div>
+      `;
+      overlay.removeEventListener('transitionend', restore);
+    }
+  };
+  overlay.addEventListener('transitionend', restore);
+}
+
+function updatePlayer(el) {
+  const loc = LOCATIONS[state.currentLocation];
+  const marker = el.querySelector('.player-marker');
+  if (!loc || loc.map !== state.currentMap) { marker.style.display = 'none'; return; }
+  marker.style.display = 'block'; marker.style.left = `${loc.x}%`; marker.style.top = `${loc.y}%`;
+  marker.querySelector('.player-marker__dot').style.background = TEAMS[state.team].colors.primary;
+  const mapImage = el.querySelector('.map-image');
+  if (marker.parentElement !== mapImage) mapImage.appendChild(marker);
+}
+
+function updateHUD(el) {
+  const char = CHARACTERS.find(c => c.id === state.character);
+  const td = TEAMS[state.team];
+  if (char) {
+    el.querySelector('.hud__avatar').textContent = char.emoji;
+    el.querySelector('.hud__avatar').style.background = char.bg;
+    el.querySelector('.hud__name').textContent = char.name;
+    el.querySelector('.hud__team').textContent = td.name;
+  }
+  el.querySelector('.hud__day').textContent = `Dagur ${state.day}`;
+  STAT_META.forEach(s => {
+    const bar = el.querySelector(`.stat-bar[data-stat="${s.key}"]`);
+    if (!bar) return;
+    const v = state.stats[s.key] || 0;
+    bar.querySelector('.stat-bar__fill').style.width = `${v}%`;
+    bar.querySelector('.stat-bar__value').textContent = `${v}%`;
+  });
+}
+
+// ===== INIT =====
+document.addEventListener('dblclick', e => e.preventDefault());
+localStorage.removeItem('bva-save');
+try {
+  goScene('mainMenu');
+  console.log('Game initialized OK');
+} catch(e) {
+  console.error('INIT ERROR:', e);
+  document.body.style.background = '#fff';
+  document.body.style.color = '#000';
+  document.body.innerHTML = '<div style="padding:2rem;font-family:monospace;"><h2>Villa!</h2><pre>' + e.message + '\n' + e.stack + '</pre></div>';
+}
+</script>
 </body>
 </html>
