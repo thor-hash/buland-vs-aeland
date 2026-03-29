@@ -305,6 +305,27 @@ html, body {
 .marel-timer { font-family:'Fredoka',sans-serif; font-weight:700; color:var(--aeland-primary); font-size:1.5rem; }
 .marel-score { font-family:'Fredoka',sans-serif; font-weight:600; color:#E2E8F0; font-size:1rem; }
 
+/* === GRÆNLAND MINIGAME === */
+.grn-field { width:100%; max-width:400px; height:280px; background:linear-gradient(180deg,#1a1a3e 0%,#2B4570 50%,#1A2744 100%); border-radius:var(--radius); position:relative; overflow:hidden; touch-action:manipulation; }
+.grn-doc { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); font-size:3rem; transition:transform 0.2s; z-index:2; }
+.grn-doc.drinking { animation:grn-gulp 0.4s ease; }
+@keyframes grn-gulp { 0%{transform:translateX(-50%) rotate(0)} 50%{transform:translateX(-50%) rotate(-15deg) scale(1.1)} 100%{transform:translateX(-50%) rotate(0)} }
+.grn-speaker { position:absolute; font-size:2rem; cursor:pointer; transition:transform 0.15s, filter 0.15s; user-select:none; z-index:3; }
+.grn-speaker:active { transform:scale(1.2); }
+.grn-speaker.hit { animation:grn-bump 0.3s ease; filter:brightness(1.5); }
+@keyframes grn-bump { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+.grn-beer { position:absolute; font-size:1.8rem; cursor:pointer; transition:transform 0.15s; user-select:none; z-index:3; animation:grn-float 2s ease-in-out infinite alternate; }
+@keyframes grn-float { 0%{transform:translateY(0)} 100%{transform:translateY(-8px)} }
+.grn-beer:active { transform:scale(1.2); }
+.grn-notes { position:absolute; font-size:1rem; pointer-events:none; opacity:0; animation:grn-note-fly 1.5s ease-out forwards; z-index:1; }
+@keyframes grn-note-fly { 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-60px) rotate(20deg)} }
+.grn-vol-bar { width:80%; max-width:300px; height:14px; background:var(--bg-card); border-radius:7px; overflow:hidden; position:relative; }
+.grn-vol-fill { height:100%; width:0%; border-radius:7px; background:linear-gradient(90deg,#3D7A4A,#E8A030,#E04848); transition:width 0.3s; }
+.grn-vol-label { font-family:'Fredoka',sans-serif; font-size:0.75rem; color:#8899B0; }
+.grn-combo { position:absolute; top:10px; right:10px; font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.2rem; color:#E8A030; opacity:0; transition:opacity 0.3s; }
+.grn-combo.show { opacity:1; animation:grn-combo-pop 0.3s ease; }
+@keyframes grn-combo-pop { 0%{transform:scale(0.5)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
+
 /* === WEEK SUMMARY === */
 .week-summary {
   background:linear-gradient(160deg,#1A2744 0%,#2B4570 40%,#1A2744 100%);
@@ -596,14 +617,7 @@ function getLocationEvent(locId) {
   },
   'fossvogur': null, // Handled by Fossvogur mini-game
   'hraunid': null, // Handled by golf mini-game
-  'graenland': {
-    text:`Grænland — norðursvæðið! Hættulegt en verðlaunin eru mikil. Alli (krabbameinslæknirinn) þekkir einhvern á sjúkrahúsinu sem skuldar honum greiða. Veðrið er hræðilegt.`,
-    choices:[
-      { text:'Heimsækja sjúkrahúsið og safna skuldinni.', outcome:{money:14,emotional:5}, resultText:'Skuldin er greidd! Alli segir: „Rannsóknirnar sýna að einn bjór á dag..." og bjóðar öllum.' },
-      { text:'Kanna hættulega fjörðinn.', outcome:{money:10,emotional:8,happiness:-3}, resultText:'Fjörðurinn er hættulegur en þar finnst falinn fjársjóður! Þú ert blautur en ríkur.' },
-      { text:'Bíða í skýli og spila spil.', outcome:{happiness:8,emotional:6}, resultText:'Þú bíður úrkomuna í skýli og spilar spil við aðra ferðamenn. Góð stund.' },
-    ]
-  },
+  'graenland': null, // Handled by Grænland mini-game
   };
   return E[locId] || null;
 }
@@ -928,6 +942,7 @@ function travelTo(el,locId) {
     // Route to appropriate scene
     if(locId==='fossvogur') { goScene('fossvogur'); return; }
     if(locId==='marel-factory') { goScene('marelFactory'); return; }
+    if(locId==='graenland') { goScene('graenlandParty'); return; }
     if(locId==='golf-hermir'||locId==='hraunid'||locId==='lokadur-golf') { goScene('golfGame',{locId}); return; }
     // Check for location event
     const ev=getLocationEvent(locId);
@@ -1242,6 +1257,180 @@ registerScene('marelFactory', {
     `;
     resultEl.querySelector('#marel-again').addEventListener('click',()=>this.onEnter());
     resultEl.querySelector('#marel-back').addEventListener('click',()=>goScene('mapView'));
+  }
+});
+
+// ===== GRÆNLAND PARTY MINI-GAME =====
+registerScene('graenlandParty', {
+  _timer:null, _score:0, _timeLeft:0, _combo:0, _vol:0, _spawnTimers:[],
+  create() {
+    const el=document.createElement('div'); el.className='event-scene';
+    el.innerHTML=`
+      <button class="ev-back">← Kort</button>
+      <div class="ev-icon">🌊</div>
+      <div class="ev-title">Grænland — Partý Alla!</div>
+      <div class="ev-sub">Beer & Beats — Hækkaðu tónlistina!</div>
+      <div style="font-size:0.72rem;color:#8899B0;text-align:center;max-width:320px;line-height:1.4;">🔊 Smelltu á hátalara til að hækka tónlistina! 🍺 Smelltu á bjóra til að drekka! Combo = meiri stig. Þú hefur 30 sekúndur.</div>
+      <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin:0.3rem 0;">
+        <div class="marel-timer" id="grn-timer">30</div>
+        <div class="marel-score" id="grn-score">🎵 0</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;">
+        <div class="grn-vol-label">🔊 Tónlist</div>
+        <div class="grn-vol-bar"><div class="grn-vol-fill" id="grn-vol-fill"></div></div>
+      </div>
+      <div class="grn-field" id="grn-field">
+        <div class="grn-combo" id="grn-combo"></div>
+        <div class="grn-doc" id="grn-doc">🧑‍⚕️</div>
+      </div>
+      <div class="ev-result" style="display:none" id="grn-result"></div>
+      <button class="ev-btn" id="grn-start">🍺 Byrja partý!</button>
+    `;
+    el.querySelector('.ev-back').addEventListener('click',()=>{this._stop();goScene('mapView');});
+    el.querySelector('#grn-start').addEventListener('click',()=>this._startGame());
+    return el;
+  },
+  onEnter() {
+    this._score=0; this._timeLeft=30; this._combo=0; this._vol=0;
+    const el=this.el;
+    el.querySelector('#grn-timer').textContent='30';
+    el.querySelector('#grn-score').textContent='🎵 0';
+    el.querySelector('#grn-vol-fill').style.width='0%';
+    el.querySelector('#grn-start').style.display='';
+    el.querySelector('#grn-result').style.display='none';
+    el.querySelector('#grn-combo').classList.remove('show');
+    const field=el.querySelector('#grn-field');
+    field.querySelectorAll('.grn-speaker,.grn-beer,.grn-notes').forEach(e=>e.remove());
+  },
+  _startGame() {
+    const el=this.el;
+    el.querySelector('#grn-start').style.display='none';
+    this._score=0; this._timeLeft=30; this._combo=0; this._vol=0;
+    const field=el.querySelector('#grn-field');
+    const timerEl=el.querySelector('#grn-timer');
+    const scoreEl=el.querySelector('#grn-score');
+    const volFill=el.querySelector('#grn-vol-fill');
+    const comboEl=el.querySelector('#grn-combo');
+    const docEl=el.querySelector('#grn-doc');
+    let lastTapTime=0;
+
+    const addScore=(pts, x, y)=>{
+      const now=Date.now();
+      if(now-lastTapTime<800) { this._combo=Math.min(this._combo+1,5); } else { this._combo=1; }
+      lastTapTime=now;
+      const total=pts*this._combo;
+      this._score+=total;
+      scoreEl.textContent=`🎵 ${this._score}`;
+      if(this._combo>1) {
+        comboEl.textContent=`x${this._combo} COMBO!`;
+        comboEl.classList.remove('show');
+        void comboEl.offsetWidth;
+        comboEl.classList.add('show');
+      }
+    };
+
+    const spawnSpeaker=()=>{
+      if(this._timeLeft<=0) return;
+      const sp=document.createElement('div');
+      sp.className='grn-speaker';
+      sp.textContent=Math.random()>0.5?'🔊':'📻';
+      sp.style.left=Math.random()*80+5+'%';
+      sp.style.top=Math.random()*55+5+'%';
+      field.appendChild(sp);
+      sp.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        sp.classList.add('hit');
+        addScore(2, parseFloat(sp.style.left), parseFloat(sp.style.top));
+        this._vol=Math.min(100, this._vol+8);
+        volFill.style.width=this._vol+'%';
+        // floating music notes
+        const note=document.createElement('div');
+        note.className='grn-notes';
+        note.textContent=['🎵','🎶','🎸','🎤'][Math.floor(Math.random()*4)];
+        note.style.left=sp.style.left;
+        note.style.top=sp.style.top;
+        field.appendChild(note);
+        setTimeout(()=>note.remove(),1500);
+        setTimeout(()=>{ sp.textContent='✅'; setTimeout(()=>sp.remove(),200); },150);
+      });
+      setTimeout(()=>{ if(sp.parentNode&&!sp.classList.contains('hit')) { sp.remove(); this._vol=Math.max(0,this._vol-3); volFill.style.width=this._vol+'%'; } },3000);
+    };
+
+    const spawnBeer=()=>{
+      if(this._timeLeft<=0) return;
+      const beer=document.createElement('div');
+      beer.className='grn-beer';
+      beer.textContent=Math.random()>0.3?'🍺':'🍻';
+      beer.style.left=Math.random()*80+5+'%';
+      beer.style.top=Math.random()*50+5+'%';
+      field.appendChild(beer);
+      beer.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        addScore(3, parseFloat(beer.style.left), parseFloat(beer.style.top));
+        docEl.classList.add('drinking');
+        setTimeout(()=>docEl.classList.remove('drinking'),400);
+        beer.textContent='😋'; beer.style.animation='none';
+        setTimeout(()=>beer.remove(),250);
+      });
+      setTimeout(()=>{ if(beer.parentNode&&beer.textContent!=='😋') beer.remove(); },3500);
+    };
+
+    // Spawn items
+    const si1=setInterval(()=>{
+      if(this._timeLeft<=0) return;
+      spawnSpeaker();
+      if(Math.random()>0.4) spawnSpeaker();
+    },1100);
+    const si2=setInterval(()=>{
+      if(this._timeLeft<=0) return;
+      spawnBeer();
+    },1800);
+    this._spawnTimers=[si1,si2];
+    spawnSpeaker(); spawnBeer(); spawnSpeaker();
+
+    // Volume decay
+    const volDecay=setInterval(()=>{
+      if(this._timeLeft<=0) { clearInterval(volDecay); return; }
+      this._vol=Math.max(0, this._vol-2);
+      volFill.style.width=this._vol+'%';
+    },1000);
+
+    // Timer
+    this._timer=setInterval(()=>{
+      this._timeLeft--;
+      timerEl.textContent=this._timeLeft;
+      if(this._timeLeft<=5) timerEl.style.color='#E04848';
+      if(this._timeLeft<=0) { clearInterval(volDecay); this._stop(); this._showResult(); }
+    },1000);
+  },
+  _stop() {
+    if(this._timer) { clearInterval(this._timer); this._timer=null; }
+    this._spawnTimers.forEach(t=>clearInterval(t));
+    this._spawnTimers=[];
+  },
+  _showResult() {
+    const el=this.el, score=this._score, vol=this._vol;
+    el.querySelector('#grn-field').querySelectorAll('.grn-speaker,.grn-beer,.grn-notes').forEach(e=>e.remove());
+    el.querySelector('#grn-timer').style.color='';
+    const gains={happiness:Math.round(score*0.4), emotional:Math.round(score*0.3)};
+    if(score>=20) gains.sex=6;
+    if(score>=30) gains.money=5;
+    if(vol>=60) { gains.happiness+=5; } // Volume bonus
+    if(state.character==='alli') { gains.happiness=Math.round(gains.happiness*1.5); gains.emotional=Math.round(gains.emotional*1.5); } // Alli bonus
+    applyGains(gains); saveGame();
+    const great=score>=25;
+    const resultEl=el.querySelector('#grn-result');
+    resultEl.style.display='';
+    resultEl.innerHTML=`
+      <div class="ev-result-icon">${great?'🎉🍺':'🎵'}</div>
+      <div class="ev-result-title ${great?'success':'fail'}">${great?'EPÍSKT PARTÝ!':'Ágætt partý...'}</div>
+      <div class="ev-result-text">${score} stig! ${great?'Alli segir: „Rannsóknirnar sýna að partý á dag..."':'Alli segir: „Næst verður betra!"'} ${vol>=60?'🔊 Tónlistin var í lagi!':'🔇 Tónlistin var of lág.'} ${state.character==='alli'?'Alli fær bónus!':''}</div>
+      <div class="ev-gains">${gainsHtml(gains)}</div>
+      <button class="ev-btn" id="grn-again">🍺 Reyna aftur</button><br>
+      <button class="ev-btn secondary" id="grn-back" style="margin-top:0.3rem">← Aftur á kort</button>
+    `;
+    resultEl.querySelector('#grn-again').addEventListener('click',()=>this.onEnter());
+    resultEl.querySelector('#grn-back').addEventListener('click',()=>goScene('mapView'));
   }
 });
 
