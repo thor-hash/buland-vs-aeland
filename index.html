@@ -633,7 +633,15 @@ function getLocationEvent(locId) {
       { text:'Finna raunverulegan sökudólg.', outcome:{emotional:10,money:5,happiness:3}, resultText:'Þú greinir stafsetningarvilluna! Hún afhjúpar svindlara sem reyndi að skipta um liði. Allir eru þakklátir.' },
     ]
   },
-  'gradibaer': null, // Handled by Aperol Spritz mini-game
+  'gradibaer': {
+    text:`Graðibær — miðbær Búlands! Stemning er á barnum þar sem Thor er búinn að panta Aperol Spritz hráefni. Leynigestir sjást í horninu og NPC-ar berjast um sætin.`,
+    choices:[
+      { text:'Versla og fá tilboð.', outcome:{money:6,happiness:7}, resultText:'Góð tilboð! Þú finnur jafnvel ódýra golfkylfu sem virkar betur en dýrar.' },
+      { text:'Tala við NPC-a á barnum.', outcome:{emotional:5,happiness:5,sex:4}, resultText:'Skemmtilegt samtal yfir bjór. Einn NPC gefur þér leynilegan gossip um andstæðingana.' },
+      { text:'Leita að Leynigestunum.', outcome:{happiness:4,emotional:4,money:4,sex:4}, resultText:'Þú finnur mann í röngum skóm sem segir: „Hæ, veistu hvað, ég þekki nákvæmlega manninn sem getur lagað þetta."' },
+      { text:'🍹 Blanda Aperol Spritz með Thor!', outcome:null, miniGame:'aperolSpritz', resultText:'' },
+    ]
+  },
   'macron-budin-2': {
     text:`Macron búðin II — keppinautinn! Búðin er full af vörum á ódýru verði. Eigandinn viðurkennir: „Ég er búinn að leggja á mig." Hann vill sættast — eða berjast til enda.`,
     choices:[
@@ -970,7 +978,6 @@ function travelTo(el,locId) {
     if(locId==='fossvogur') { goScene('fossvogur'); return; }
     if(locId==='marel-factory') { goScene('marelFactory'); return; }
     if(locId==='graenland') { goScene('graenlandParty'); return; }
-    if(locId==='gradibaer') { goScene('aperolSpritz'); return; }
     if(locId==='golf-hermir'||locId==='hraunid'||locId==='lokadur-golf') { goScene('golfGame',{locId}); return; }
     // Check for location event
     const ev=getLocationEvent(locId);
@@ -1026,6 +1033,8 @@ registerScene('locationEvent', {
     choicesEl.querySelectorAll('.ev-choice').forEach(btn=>{
       btn.addEventListener('click',()=>{
         const choice=ev.choices[parseInt(btn.dataset.idx)];
+        // If choice launches a mini-game, go there directly
+        if(choice.miniGame) { goScene(choice.miniGame); return; }
         const gains=choice.outcome;
         applyGains(gains);
         saveGame();
