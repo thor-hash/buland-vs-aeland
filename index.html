@@ -10,20 +10,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
 :root {
-  --buland-primary: #2563EB;
-  --buland-secondary: #10B981;
-  --aeland-primary: #F59E0B;
-  --aeland-secondary: #EF4444;
-  --bg-dark: #0F172A;
-  --bg-card: #1E293B;
-  --bg-card-hover: #334155;
-  --parchment: #F8FAFC;
-  --stat-emotional: #EF4444;
-  --stat-money: #3B82F6;
-  --stat-happiness: #FBBF24;
-  --stat-sex: #EC4899;
-  --text-dark: #1E293B;
-  --text-light: #F8FAFC;
+  --buland-primary: #2B4570;
+  --buland-secondary: #3D7A4A;
+  --aeland-primary: #E8A030;
+  --aeland-secondary: #E07B2D;
+  --bg-dark: #1A2744;
+  --bg-card: #243352;
+  --bg-card-hover: #2E4068;
+  --parchment: #FFF8ED;
+  --stat-emotional: #E04848;
+  --stat-money: #4A90D9;
+  --stat-happiness: #F5C542;
+  --stat-sex: #E86BA0;
+  --text-dark: #1A2744;
+  --text-light: #FFF8ED;
   --radius: 16px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -42,14 +42,14 @@ html, body {
 
 /* === MAIN MENU === */
 .main-menu {
-  background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 40%,#0F172A 100%);
+  background:linear-gradient(160deg,#1A2744 0%,#2B4570 40%,#1A2744 100%);
   align-items:center; justify-content:center; text-align:center; gap:1rem; padding:2rem 1.5rem;
   position:relative; overflow:hidden;
 }
 .main-menu::before {
   content:''; position:absolute; inset:0;
-  background:radial-gradient(circle at 30% 20%,rgba(37,99,235,0.15) 0%,transparent 50%),
-             radial-gradient(circle at 70% 80%,rgba(245,158,11,0.12) 0%,transparent 50%);
+  background:radial-gradient(circle at 30% 20%,rgba(43,69,112,0.2) 0%,transparent 50%),
+             radial-gradient(circle at 70% 80%,rgba(232,160,48,0.15) 0%,transparent 50%);
 }
 .main-menu > * { position:relative; z-index:1; }
 .main-menu__golf { font-size:3.5rem; animation:golf-bounce 2s ease-in-out infinite; }
@@ -78,19 +78,19 @@ html, body {
   box-shadow:0 4px 20px rgba(0,0,0,0.3);
 }
 .team-btn:active { transform:scale(0.95); }
-.team-btn--buland { background:linear-gradient(135deg,#2563EB,#10B981); color:white; }
-.team-btn--aeland { background:linear-gradient(135deg,#F59E0B,#EF4444); color:white; }
+.team-btn--buland { background:linear-gradient(135deg,#2B4570,#3D7A4A); color:white; }
+.team-btn--aeland { background:linear-gradient(135deg,#E8A030,#E07B2D); color:white; }
 .team-btn__emoji { font-size:1.8rem; }
 
 /* === CHARACTER SELECT === */
 .char-select {
-  background:linear-gradient(180deg,var(--bg-dark) 0%,#0F172A 100%);
+  background:linear-gradient(180deg,var(--bg-dark) 0%,#1A2744 100%);
   padding:0.8rem 1rem; gap:0.4rem;
 }
 .char-select__header { text-align:center; padding:0.3rem 0 0.2rem; }
 .char-select__team-name { font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(1.4rem,5vw,2rem); }
-.char-select__team-name.buland { color:var(--buland-primary); text-shadow:0 0 20px rgba(37,99,235,0.3); }
-.char-select__team-name.aeland { color:var(--aeland-primary); text-shadow:0 0 20px rgba(245,158,11,0.3); }
+.char-select__team-name.buland { color:var(--buland-primary); text-shadow:0 0 20px rgba(43,69,112,0.3); }
+.char-select__team-name.aeland { color:var(--aeland-primary); text-shadow:0 0 20px rgba(232,160,48,0.3); }
 .char-select__instruction { font-size:0.75rem; color:#64748B; margin-top:0.15rem; }
 .char-grid {
   flex:1; display:flex; flex-direction:column; gap:8px;
@@ -108,17 +108,17 @@ html, body {
   content:''; position:absolute; inset:0; opacity:0;
   transition:opacity 0.25s;
 }
-.char-card.aeland-team::before { background:linear-gradient(135deg,rgba(245,158,11,0.08),transparent 60%); }
-.char-card.buland-team::before { background:linear-gradient(135deg,rgba(37,99,235,0.08),transparent 60%); }
+.char-card.aeland-team::before { background:linear-gradient(135deg,rgba(232,160,48,0.08),transparent 60%); }
+.char-card.buland-team::before { background:linear-gradient(135deg,rgba(43,69,112,0.08),transparent 60%); }
 .char-card:active { transform:scale(0.98); }
 .char-card.selected::before { opacity:1; }
 .char-card.selected {
   border-color:var(--aeland-primary);
-  box-shadow:0 0 0 1px rgba(245,158,11,0.15), 0 4px 20px rgba(245,158,11,0.12);
+  box-shadow:0 0 0 1px rgba(232,160,48,0.15), 0 4px 20px rgba(232,160,48,0.12);
 }
 .char-card.selected.buland-team {
   border-color:var(--buland-primary);
-  box-shadow:0 0 0 1px rgba(37,99,235,0.15), 0 4px 20px rgba(37,99,235,0.12);
+  box-shadow:0 0 0 1px rgba(43,69,112,0.15), 0 4px 20px rgba(43,69,112,0.12);
 }
 .char-avatar {
   width:54px; height:54px; border-radius:14px;
@@ -134,8 +134,8 @@ html, body {
   font-size:0.65rem; font-weight:600; letter-spacing:0.02em;
   display:inline-block; padding:2px 8px; border-radius:6px; margin-bottom:0.2rem;
 }
-.char-card.aeland-team .char-info__ability { color:var(--aeland-primary); background:rgba(245,158,11,0.1); }
-.char-card.buland-team .char-info__ability { color:var(--buland-primary); background:rgba(37,99,235,0.1); }
+.char-card.aeland-team .char-info__ability { color:var(--aeland-primary); background:rgba(232,160,48,0.1); }
+.char-card.buland-team .char-info__ability { color:var(--buland-primary); background:rgba(43,69,112,0.1); }
 .char-info__stats { display:flex; gap:4px; margin-top:0.15rem; }
 .char-stat-pip {
   width:20px; height:5px; border-radius:3px; opacity:0.15;
@@ -202,7 +202,7 @@ html, body {
 .hud__info { display:flex; gap:6px; align-items:center; }
 .hud__week {
   font-family:'Fredoka',sans-serif; font-weight:600; color:var(--aeland-primary); font-size:0.75rem;
-  background:rgba(245,158,11,0.12); padding:3px 8px; border-radius:8px;
+  background:rgba(232,160,48,0.12); padding:3px 8px; border-radius:8px;
 }
 .hud__ap {
   font-family:'Fredoka',sans-serif; font-weight:600; color:var(--buland-secondary); font-size:0.75rem;
@@ -273,17 +273,17 @@ html, body {
 .ev-result { text-align:center; width:100%; max-width:400px; }
 .ev-result-icon { font-size:3rem; }
 .ev-result-title { font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.3rem; margin:0.3rem 0; }
-.ev-result-title.success { color:#10B981; }
-.ev-result-title.fail { color:#EF4444; }
+.ev-result-title.success { color:#3D7A4A; }
+.ev-result-title.fail { color:#E04848; }
 .ev-result-text { color:#94A3B8; font-size:0.85rem; margin-bottom:0.5rem; }
 .ev-gains { display:flex; flex-wrap:wrap; justify-content:center; gap:0.4rem; margin-bottom:0.8rem; }
 .ev-gain { display:inline-block; padding:5px 12px; border-radius:8px; background:var(--bg-card); font-size:0.85rem; color:white; font-weight:600; }
-.ev-gain.neg { color:#EF4444; }
+.ev-gain.neg { color:#E04848; }
 .ev-btn {
   padding:0.75rem 2rem; border:none; border-radius:12px;
   background:linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary));
   color:white; font-family:'Fredoka',sans-serif; font-weight:600; font-size:1rem; cursor:pointer;
-  box-shadow:0 4px 15px rgba(245,158,11,0.3); margin-top:0.4rem;
+  box-shadow:0 4px 15px rgba(232,160,48,0.3); margin-top:0.4rem;
 }
 .ev-btn:active { transform:scale(0.96); }
 .ev-btn.secondary { background:var(--bg-card); color:#94A3B8; box-shadow:none; }
@@ -306,7 +306,7 @@ html, body {
 
 /* === WEEK SUMMARY === */
 .week-summary {
-  background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 40%,#0F172A 100%);
+  background:linear-gradient(160deg,#1A2744 0%,#2B4570 40%,#1A2744 100%);
   align-items:center; justify-content:center; text-align:center; gap:0.8rem; padding:2rem 1.5rem;
 }
 .week-num { font-family:'Fredoka',sans-serif; font-weight:700; font-size:2rem; color:var(--aeland-primary); }
@@ -316,11 +316,11 @@ html, body {
 .week-stat__val { font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.2rem; color:#E2E8F0; }
 .week-stat__label { font-size:0.7rem; color:#64748B; }
 .week-event { background:var(--bg-card); border-radius:12px; padding:0.8rem; width:100%; max-width:380px; color:#E2E8F0; font-size:0.85rem; line-height:1.4; }
-.week-quest { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:0.5rem 0.8rem; font-size:0.8rem; color:var(--aeland-primary); width:100%; max-width:380px; }
+.week-quest { background:rgba(232,160,48,0.1); border:1px solid rgba(232,160,48,0.2); border-radius:10px; padding:0.5rem 0.8rem; font-size:0.8rem; color:var(--aeland-primary); width:100%; max-width:380px; }
 
 /* === ENDING === */
 .ending-scene {
-  background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 40%,#0F172A 100%);
+  background:linear-gradient(160deg,#1A2744 0%,#2B4570 40%,#1A2744 100%);
   align-items:center; justify-content:center; text-align:center; gap:1rem; padding:2rem 1.5rem;
   overflow-y:auto;
 }
@@ -1040,12 +1040,12 @@ registerScene('fossvogur', {
       <div style="text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;color:#E2E8F0;margin-top:0.5rem;">Veldu treyju til að selja</div>
       <div style="font-size:0.7rem;color:#475569;text-align:center;max-width:320px;">Eigið lið er öruggara. Að selja andstæðingsins treyju gefur meiri áhættu — og ef þú selur of margar = landráð! ⚠️</div>
       <div style="display:flex;gap:0.75rem;justify-content:center;">
-        <div class="foss-j" data-team="${own}" style="flex:1;min-width:130px;max-width:170px;padding:1.2rem 0.6rem;border-radius:var(--radius);border:3px solid transparent;cursor:pointer;text-align:center;background:linear-gradient(135deg,${own==='buland'?'#2563EB,#10B981':'#F59E0B,#EF4444'});">
+        <div class="foss-j" data-team="${own}" style="flex:1;min-width:130px;max-width:170px;padding:1.2rem 0.6rem;border-radius:var(--radius);border:3px solid transparent;cursor:pointer;text-align:center;background:linear-gradient(135deg,${own==='buland'?'#2B4570,#3D7A4A':'#E8A030,#E07B2D'});">
           <div style="font-size:2.2rem">👕</div>
           <div style="color:white;font-size:0.85rem;margin-top:0.3rem;font-weight:600">${TEAMS[own].emoji} ${TEAMS[own].name}</div>
           <div style="color:rgba(255,255,255,0.6);font-size:0.7rem">Öruggt — eigið lið</div>
         </div>
-        <div class="foss-j" data-team="${other}" style="flex:1;min-width:130px;max-width:170px;padding:1.2rem 0.6rem;border-radius:var(--radius);border:3px solid transparent;cursor:pointer;text-align:center;background:linear-gradient(135deg,${other==='buland'?'#2563EB,#10B981':'#F59E0B,#EF4444'});">
+        <div class="foss-j" data-team="${other}" style="flex:1;min-width:130px;max-width:170px;padding:1.2rem 0.6rem;border-radius:var(--radius);border:3px solid transparent;cursor:pointer;text-align:center;background:linear-gradient(135deg,${other==='buland'?'#2B4570,#3D7A4A':'#E8A030,#E07B2D'});">
           <div style="font-size:2.2rem">👕</div>
           <div style="color:white;font-size:0.85rem;margin-top:0.3rem;font-weight:600">${TEAMS[other].emoji} ${TEAMS[other].name}</div>
           <div style="color:rgba(255,255,255,0.6);font-size:0.7rem">⚠️ Áhætta — landráð!</div>
@@ -1300,7 +1300,7 @@ registerScene('golfGame', {
         <div class="ev-text">⚡ Kraftur — stöðvaðu stikuna á hvíta merkinu!</div>
         <div class="golf-power-wrap">
           <div class="golf-power-target" style="left:${targetPower}%"></div>
-          <div class="golf-power-bar" style="background:linear-gradient(90deg,#10B981,#F59E0B,#EF4444)"></div>
+          <div class="golf-power-bar" style="background:linear-gradient(90deg,#3D7A4A,#E8A030,#E04848)"></div>
         </div>
         <button class="ev-btn" id="golf-power-btn">💥 HÖGG!</button>
       </div>
@@ -1478,7 +1478,7 @@ registerScene('ending', {
       titleEl.style.color='var(--aeland-primary)';
     } else if(score>=200) {
       titleEl.textContent='Svo nálægt...';
-      titleEl.style.color='#EF4444';
+      titleEl.style.color='#E04848';
     } else {
       titleEl.textContent='Ferðin mistókst';
       titleEl.style.color='#64748B';
