@@ -5,238 +5,226 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Búland vs Æland</title>
+  <title>Búland vs. Æland – Síðasta golf ferðin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
 :root {
-  --buland-primary: #1B3A5C;
-  --buland-secondary: #4A7C59;
-  --aeland-primary: #D4A843;
-  --aeland-secondary: #E8732A;
-  --parchment: #F5F0E8;
-  --stat-emotional: #C0392B;
-  --stat-money: #2980B9;
-  --stat-happiness: #F1C40F;
-  --stat-sex: #8B6914;
-  --text-dark: #2C1810;
-  --text-light: #F5F0E8;
+  --buland-primary: #2563EB;
+  --buland-secondary: #10B981;
+  --aeland-primary: #F59E0B;
+  --aeland-secondary: #EF4444;
+  --bg-dark: #0F172A;
+  --bg-card: #1E293B;
+  --bg-card-hover: #334155;
+  --parchment: #F8FAFC;
+  --stat-emotional: #EF4444;
+  --stat-money: #3B82F6;
+  --stat-happiness: #FBBF24;
+  --stat-sex: #EC4899;
+  --text-dark: #1E293B;
+  --text-light: #F8FAFC;
+  --radius: 16px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body {
   width:100%; height:100%; overflow:hidden;
-  background:#0a0a0a; font-family:'Inter',sans-serif;
+  background:var(--bg-dark); font-family:'Inter',sans-serif;
   touch-action:none; -webkit-tap-highlight-color:transparent;
   user-select:none; -webkit-user-select:none;
 }
 #game-root { width:100vw; height:100vh; height:100dvh; position:relative; overflow:hidden; }
 .scene {
   position:absolute; inset:0; display:flex; flex-direction:column;
-  opacity:0; transition:opacity 0.4s ease; pointer-events:none;
+  opacity:0; transition:opacity 0.35s ease; pointer-events:none;
 }
 .scene.active { opacity:1; pointer-events:all; }
 
-/* MAIN MENU */
+/* === MAIN MENU === */
 .main-menu {
-  background:linear-gradient(180deg,#1a0e2e 0%,#2d1b4e 30%,#1B3A5C 60%,#0a1628 100%);
-  align-items:center; justify-content:center; text-align:center; gap:1.2rem; padding:2rem;
+  background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 40%,#0F172A 100%);
+  align-items:center; justify-content:center; text-align:center; gap:1rem; padding:2rem 1.5rem;
+  position:relative; overflow:hidden;
 }
+.main-menu::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 30% 20%,rgba(37,99,235,0.15) 0%,transparent 50%),
+             radial-gradient(circle at 70% 80%,rgba(245,158,11,0.12) 0%,transparent 50%);
+}
+.main-menu > * { position:relative; z-index:1; }
+.main-menu__golf { font-size:3.5rem; animation:golf-bounce 2s ease-in-out infinite; }
+@keyframes golf-bounce { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-8px) rotate(5deg)} }
 .main-menu__title {
-  font-family:'MedievalSharp',cursive;
-  font-size:clamp(2rem,8vw,4rem);
-  color:var(--aeland-primary);
-  text-shadow:0 0 20px rgba(212,168,67,0.5),0 2px 4px rgba(0,0,0,0.8);
-  line-height:1.1;
+  font-family:'Fredoka',sans-serif; font-weight:700;
+  font-size:clamp(2.2rem,9vw,4rem);
+  line-height:1; letter-spacing:-0.02em;
 }
+.main-menu__title--buland { color:var(--buland-primary); }
+.main-menu__title--aeland { color:var(--aeland-primary); }
 .main-menu__vs {
-  font-size:clamp(1.5rem,6vw,3rem);
-  color:var(--aeland-secondary);
-  text-shadow:0 0 15px rgba(232,115,42,0.6);
+  font-family:'Fredoka',sans-serif; font-weight:600;
+  font-size:clamp(1.2rem,5vw,2rem); color:#64748B;
 }
 .main-menu__subtitle {
-  font-family:'MedievalSharp',cursive;
-  font-size:clamp(1rem,4vw,1.8rem);
-  color:var(--parchment); opacity:0.8;
+  font-family:'Fredoka',sans-serif; font-weight:500;
+  font-size:clamp(0.95rem,3.5vw,1.4rem);
+  color:#94A3B8; letter-spacing:0.02em;
 }
-.team-select { display:flex; gap:1rem; width:100%; max-width:500px; flex-wrap:wrap; justify-content:center; }
+.team-select { display:flex; gap:0.75rem; width:100%; max-width:400px; margin-top:0.5rem; }
 .team-btn {
-  flex:1; min-width:140px; padding:1.2rem 1rem;
-  border:2px solid; border-radius:12px;
-  font-family:'MedievalSharp',cursive; font-size:clamp(1.1rem,3.5vw,1.5rem);
-  cursor:pointer; transition:all 0.3s ease;
+  flex:1; padding:1.2rem 0.8rem; border:none; border-radius:var(--radius);
+  font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(1rem,3.5vw,1.3rem);
+  cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
 }
-.team-btn:active { transform:scale(0.96); }
-.team-btn--buland {
-  background:linear-gradient(135deg,#1B3A5C,#2a5a3a);
-  border-color:var(--buland-secondary); color:var(--text-light);
-}
-.team-btn--aeland {
-  background:linear-gradient(135deg,#D4A843,#E8732A);
-  border-color:#f0c060; color:var(--text-dark);
-}
+.team-btn:active { transform:scale(0.95); }
+.team-btn--buland { background:linear-gradient(135deg,#2563EB,#10B981); color:white; }
+.team-btn--aeland { background:linear-gradient(135deg,#F59E0B,#EF4444); color:white; }
+.team-btn__emoji { font-size:1.8rem; }
 
-/* CHARACTER SELECT */
-.char-select { background:var(--parchment); padding:1rem; gap:0.5rem; }
-.char-select__header { text-align:center; padding:0.5rem 0; }
-.char-select__team-name {
-  font-family:'MedievalSharp',cursive; font-size:clamp(1.3rem,5vw,2rem);
+/* === CHARACTER SELECT === */
+.char-select {
+  background:linear-gradient(180deg,var(--bg-dark) 0%,#0F172A 100%);
+  padding:0.8rem 1rem; gap:0.4rem;
 }
-.char-select__team-name.buland { color:var(--buland-primary); }
-.char-select__team-name.aeland { color:var(--aeland-secondary); }
-.char-select__instruction { font-size:0.85rem; color:#666; margin-top:0.2rem; }
+.char-select__header { text-align:center; padding:0.3rem 0 0.2rem; }
+.char-select__team-name { font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(1.4rem,5vw,2rem); }
+.char-select__team-name.buland { color:var(--buland-primary); text-shadow:0 0 20px rgba(37,99,235,0.3); }
+.char-select__team-name.aeland { color:var(--aeland-primary); text-shadow:0 0 20px rgba(245,158,11,0.3); }
+.char-select__instruction { font-size:0.75rem; color:#64748B; margin-top:0.15rem; }
 .char-grid {
-  flex:1; display:flex; flex-direction:column; gap:0.6rem;
-  overflow-y:auto; padding:0.5rem 0; -webkit-overflow-scrolling:touch;
+  flex:1; display:flex; flex-direction:column; gap:8px;
+  overflow-y:auto; padding:0.4rem 0; -webkit-overflow-scrolling:touch;
 }
 .char-card {
   display:flex; gap:0.8rem; align-items:center;
-  background:#fff; border-radius:12px; padding:0.8rem;
-  border:2px solid transparent; box-shadow:0 2px 8px rgba(0,0,0,0.08);
-  cursor:pointer; transition:all 0.2s; min-height:80px;
+  background:linear-gradient(135deg,rgba(30,41,59,0.9),rgba(30,41,59,0.6));
+  backdrop-filter:blur(4px);
+  border-radius:14px; padding:0.75rem 0.85rem;
+  border:2px solid rgba(255,255,255,0.05); cursor:pointer; transition:all 0.25s;
+  position:relative; overflow:hidden;
 }
+.char-card::before {
+  content:''; position:absolute; inset:0; opacity:0;
+  transition:opacity 0.25s;
+}
+.char-card.aeland-team::before { background:linear-gradient(135deg,rgba(245,158,11,0.08),transparent 60%); }
+.char-card.buland-team::before { background:linear-gradient(135deg,rgba(37,99,235,0.08),transparent 60%); }
 .char-card:active { transform:scale(0.98); }
-.char-card.selected { border-color:var(--aeland-primary); box-shadow:0 2px 12px rgba(212,168,67,0.3); }
-.char-card.selected.buland-team { border-color:var(--buland-secondary); box-shadow:0 2px 12px rgba(74,124,89,0.3); }
-.char-avatar {
-  width:56px; height:56px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.6rem; flex-shrink:0; border:2px solid rgba(0,0,0,0.1);
+.char-card.selected::before { opacity:1; }
+.char-card.selected {
+  border-color:var(--aeland-primary);
+  box-shadow:0 0 0 1px rgba(245,158,11,0.15), 0 4px 20px rgba(245,158,11,0.12);
 }
-.char-info { flex:1; min-width:0; }
-.char-info__name { font-family:'MedievalSharp',cursive; font-size:1.1rem; font-weight:700; color:var(--text-dark); }
-.char-info__role { font-size:0.75rem; color:#888; margin-bottom:0.2rem; }
-.char-info__ability { font-size:0.7rem; color:var(--buland-primary); font-weight:600; }
-.char-info__stats { display:flex; gap:0.3rem; margin-top:0.3rem; }
-.char-stat-pip { width:8px; height:8px; border-radius:50%; opacity:0.3; }
+.char-card.selected.buland-team {
+  border-color:var(--buland-primary);
+  box-shadow:0 0 0 1px rgba(37,99,235,0.15), 0 4px 20px rgba(37,99,235,0.12);
+}
+.char-avatar {
+  width:54px; height:54px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.6rem; flex-shrink:0;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  position:relative; z-index:1;
+}
+.char-info { flex:1; min-width:0; position:relative; z-index:1; }
+.char-info__name { font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.05rem; color:#F1F5F9; letter-spacing:-0.01em; }
+.char-info__role { font-size:0.68rem; color:#94A3B8; margin-bottom:0.2rem; letter-spacing:0.01em; }
+.char-info__ability {
+  font-size:0.65rem; font-weight:600; letter-spacing:0.02em;
+  display:inline-block; padding:2px 8px; border-radius:6px; margin-bottom:0.2rem;
+}
+.char-card.aeland-team .char-info__ability { color:var(--aeland-primary); background:rgba(245,158,11,0.1); }
+.char-card.buland-team .char-info__ability { color:var(--buland-primary); background:rgba(37,99,235,0.1); }
+.char-info__stats { display:flex; gap:4px; margin-top:0.15rem; }
+.char-stat-pip {
+  width:20px; height:5px; border-radius:3px; opacity:0.15;
+  transition:opacity 0.3s;
+}
 .char-stat-pip.strong { opacity:1; }
 .char-select__confirm {
-  padding:1rem 2rem; border:none; border-radius:12px;
-  font-family:'MedievalSharp',cursive; font-size:1.2rem;
-  cursor:pointer; color:#fff; width:100%; transition:all 0.2s;
-  opacity:0.4; pointer-events:none;
+  padding:0.9rem 2rem; border:none; border-radius:14px;
+  font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.05rem;
+  cursor:pointer; color:#fff; width:100%; transition:all 0.3s;
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
 }
-.char-select__confirm.ready { opacity:1; pointer-events:all; }
+.char-select__confirm.ready { opacity:1; pointer-events:all; transform:translateY(0); }
 .char-select__confirm.buland-team { background:linear-gradient(135deg,var(--buland-primary),var(--buland-secondary)); }
 .char-select__confirm.aeland-team { background:linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary)); }
 .char-select__confirm:active { transform:scale(0.97); }
-.char-select__back { background:none; border:none; color:#888; font-size:0.85rem; cursor:pointer; padding:0.5rem; text-decoration:underline; }
+.char-select__back {
+  background:none; border:none; color:#475569; font-size:0.8rem; cursor:pointer;
+  padding:0.5rem; font-family:'Fredoka',sans-serif; transition:color 0.2s;
+}
+.char-select__back:active { color:#94A3B8; }
 
-/* MAP VIEW */
-.map-view { background:#0a1628; height:100%; }
-.map-container { flex:1; position:relative; overflow:hidden; touch-action:pan-x pan-y pinch-zoom; min-height:0; }
-.map-image { position:absolute; transform-origin:0 0; will-change:transform; border-radius:8px; }
-.map-image img { display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
-.location-pin {
-  position:absolute; transform:translate(-50%,-100%);
-  cursor:pointer; z-index:10; transition:transform 0.2s;
-  padding:8px; /* larger tap target */
+/* === MAP VIEW — location list === */
+.map-view { background:var(--bg-dark); }
+.loc-list-wrap { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:0.5rem 0.75rem 1.5rem; }
+.loc-list-tabs { display:flex; gap:0.4rem; margin-bottom:0.6rem; background:var(--bg-card); border-radius:12px; padding:4px; }
+.loc-list-tab {
+  flex:1; padding:0.55rem 0; text-align:center; border:none; cursor:pointer;
+  font-family:'Fredoka',sans-serif; font-weight:600; font-size:0.85rem; transition:all 0.2s;
+  background:transparent; color:#64748B; border-radius:10px;
 }
-.location-pin:active { transform:translate(-50%,-100%) scale(1.2); }
-.location-pin__marker {
-  width:44px; height:44px; border-radius:50% 50% 50% 0;
-  transform:rotate(-45deg); display:flex; align-items:center; justify-content:center;
-  border:2px solid rgba(255,255,255,0.8);
-  box-shadow:0 2px 8px rgba(0,0,0,0.5);
+.loc-list-tab.active { background:var(--bg-card-hover); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+.loc-list-tab:active { transform:scale(0.97); }
+.loc-list { display:flex; flex-direction:column; gap:6px; }
+.loc-row {
+  display:flex; align-items:center; gap:0.7rem;
+  padding:0.7rem 0.65rem; cursor:pointer; transition:all 0.15s;
+  background:var(--bg-card); border-radius:12px;
 }
-.location-pin__marker span { transform:rotate(45deg); font-size:20px; }
-.location-pin__label {
-  position:absolute; top:calc(100% - 4px); left:50%; transform:translateX(-50%);
-  white-space:nowrap; font-size:11px; font-weight:700; color:#fff;
-  text-shadow:0 1px 3px rgba(0,0,0,0.9),0 0 6px rgba(0,0,0,0.7);
-  pointer-events:none; background:rgba(0,0,0,0.45); padding:1px 6px; border-radius:4px;
-}
-.location-pin.current .location-pin__marker { animation:pulse-pin 1.5s ease-in-out infinite; }
-@keyframes pulse-pin {
-  0%,100% { box-shadow:0 0 0 0 rgba(255,255,255,0.4); }
-  50% { box-shadow:0 0 0 8px rgba(255,255,255,0); }
-}
-.player-marker {
-  position:absolute; transform:translate(-50%,-50%);
-  z-index:15; pointer-events:none;
-  transition:left 0.8s ease,top 0.8s ease;
-}
-.player-marker__dot {
-  width:20px; height:20px; border-radius:50%;
-  border:3px solid #fff;
-  box-shadow:0 0 10px rgba(255,255,255,0.5),0 2px 8px rgba(0,0,0,0.5);
-  animation:player-breathe 2s ease-in-out infinite;
-}
-@keyframes player-breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
-.map-switch {
-  position:absolute; top:12px; right:12px; z-index:20;
-  background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,0.2); border-radius:10px;
-  padding:8px 14px; color:#fff; font-size:0.8rem; font-weight:600;
-  cursor:pointer; transition:all 0.2s;
-}
-.map-switch:active { transform:scale(0.95); }
+.loc-row:active { background:var(--bg-card-hover); transform:scale(0.98); }
+.loc-row.current { background:var(--bg-card-hover); box-shadow:inset 0 0 0 2px rgba(255,255,255,0.15); }
+.loc-row.special { box-shadow:inset 0 0 0 2px var(--aeland-primary); }
+.loc-row__icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+.loc-row__info { flex:1; min-width:0; }
+.loc-row__name { font-family:'Fredoka',sans-serif; font-weight:500; color:#E2E8F0; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.loc-row__boost { font-size:0.65rem; color:#64748B; margin-top:2px; }
+.loc-row__here { font-size:0.65rem; color:var(--buland-secondary); font-weight:700; flex-shrink:0; background:rgba(16,185,129,0.15); padding:2px 8px; border-radius:6px; }
+.loc-row__arrow { color:#475569; font-size:1rem; flex-shrink:0; font-weight:700; }
 
-/* HUD */
+/* === HUD === */
 .hud {
   position:relative; z-index:20;
-  background:rgba(10,10,10,0.85); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid rgba(255,255,255,0.1);
-  padding:8px 12px; display:flex; flex-direction:column; gap:4px;
-  transition:all 0.3s;
+  background:var(--bg-card); border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:10px 14px; display:flex; flex-direction:column; gap:6px; transition:all 0.3s;
 }
-.hud.collapsed { padding:4px 12px; }
+.hud.collapsed { padding:6px 14px; }
 .hud.collapsed .hud__stats { display:none; }
 .hud__top { display:flex; align-items:center; justify-content:space-between; }
-.hud__character { display:flex; align-items:center; gap:8px; }
-.hud__avatar {
-  width:32px; height:32px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1rem; border:2px solid rgba(255,255,255,0.3);
+.hud__character { display:flex; align-items:center; gap:10px; }
+.hud__avatar { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.hud__name { font-family:'Fredoka',sans-serif; font-weight:600; color:#E2E8F0; font-size:0.95rem; }
+.hud__team { font-size:0.65rem; color:#64748B; }
+.hud__info { display:flex; gap:6px; align-items:center; }
+.hud__week {
+  font-family:'Fredoka',sans-serif; font-weight:600; color:var(--aeland-primary); font-size:0.75rem;
+  background:rgba(245,158,11,0.12); padding:3px 8px; border-radius:8px;
 }
-.hud__name { font-family:'MedievalSharp',cursive; color:#fff; font-size:0.95rem; }
-.hud__team { font-size:0.65rem; opacity:0.6; color:#fff; }
-.hud__day { font-family:'MedievalSharp',cursive; color:var(--aeland-primary); font-size:0.85rem; }
-.hud__toggle { background:none; border:none; color:rgba(255,255,255,0.5); font-size:1rem; cursor:pointer; padding:4px; }
-.hud__stats { display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; }
-.stat-bar { display:flex; align-items:center; gap:8px; }
-.stat-bar__icon { font-size:1rem; width:22px; text-align:center; }
-.stat-bar__track { flex:1; height:14px; background:rgba(255,255,255,0.15); border-radius:7px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
-.stat-bar__fill {
-  height:100%; border-radius:7px; transition:width 0.6s ease; position:relative;
-  box-shadow:0 0 6px rgba(255,255,255,0.2);
+.hud__ap {
+  font-family:'Fredoka',sans-serif; font-weight:600; color:var(--buland-secondary); font-size:0.75rem;
+  background:rgba(16,185,129,0.12); padding:3px 8px; border-radius:8px;
 }
-.stat-bar__fill::after {
-  content:''; position:absolute; right:0; top:0; bottom:0; width:10px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4));
-  border-radius:0 7px 7px 0;
-}
-.stat-bar__value { font-size:0.85rem; color:#fff; width:36px; text-align:right; font-weight:700; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
+.hud__toggle { background:none; border:none; color:#64748B; font-size:1rem; cursor:pointer; padding:6px; }
+.hud__stats { display:grid; grid-template-columns:1fr 1fr; gap:6px 14px; margin-top:2px; }
+.stat-bar { display:flex; align-items:center; gap:6px; }
+.stat-bar__icon { font-size:0.85rem; width:20px; text-align:center; }
+.stat-bar__track { flex:1; height:10px; background:rgba(255,255,255,0.08); border-radius:5px; overflow:hidden; }
+.stat-bar__fill { height:100%; border-radius:5px; transition:width 0.6s ease; }
+.stat-bar__value { font-size:0.75rem; color:#94A3B8; width:32px; text-align:right; font-weight:700; }
 
-/* LOCATION PANEL */
-.location-panel {
-  position:absolute; bottom:0; left:0; right:0; z-index:25;
-  background:rgba(10,10,10,0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-  border-top:1px solid rgba(255,255,255,0.1);
-  border-radius:16px 16px 0 0; padding:1.2rem;
-  transform:translateY(100%); transition:transform 0.3s ease;
-}
-.location-panel.open { transform:translateY(0); }
-.location-panel__handle { width:40px; height:4px; background:rgba(255,255,255,0.2); border-radius:2px; margin:0 auto 1rem; }
-.location-panel__name { font-family:'MedievalSharp',cursive; color:#fff; font-size:1.3rem; margin-bottom:0.3rem; }
-.location-panel__desc { color:rgba(255,255,255,0.6); font-size:0.8rem; line-height:1.4; margin-bottom:1rem; }
-.location-panel__actions { display:flex; gap:0.5rem; }
-.location-panel__btn {
-  flex:1; padding:0.7rem; border:none; border-radius:10px;
-  font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.2s;
-}
-.location-panel__btn:active { transform:scale(0.96); }
-.location-panel__btn--travel { background:linear-gradient(135deg,var(--buland-secondary),#3a9a5a); color:#fff; }
-.location-panel__btn--cancel { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.7); }
-
-/* TRAVEL OVERLAY */
+/* === TRAVEL OVERLAY === */
 .travel-overlay {
   position:absolute; inset:0; z-index:50;
-  background:rgba(0,0,0,0.8);
+  background:rgba(15,23,42,0.92); backdrop-filter:blur(8px);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   gap:1rem; opacity:0; pointer-events:none; transition:opacity 0.3s;
 }
 .travel-overlay.active { opacity:1; pointer-events:all; }
-.travel-overlay__text { font-family:'MedievalSharp',cursive; color:var(--aeland-primary); font-size:1.3rem; }
+.travel-overlay__text { font-family:'Fredoka',sans-serif; font-weight:600; color:var(--aeland-primary); font-size:1.2rem; }
 .travel-overlay__dots span {
   display:inline-block; width:8px; height:8px;
   background:var(--aeland-primary); border-radius:50%; margin:0 4px;
@@ -248,36 +236,117 @@ html, body {
   0%,80%,100% { transform:translateY(0); opacity:0.3; }
   40% { transform:translateY(-8px); opacity:1; }
 }
-
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:2px; }
+::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
 @supports (padding:env(safe-area-inset-top)) {
-  .hud { padding-top:calc(8px + env(safe-area-inset-top)); }
-  .location-panel { padding-bottom:calc(1.2rem + env(safe-area-inset-bottom)); }
+  .hud { padding-top:calc(10px + env(safe-area-inset-top)); }
 }
+
+/* === EVENT / MINIGAME SCENES === */
+.event-scene {
+  background:var(--bg-dark);
+  align-items:center; padding:1rem; gap:0.5rem; overflow-y:auto; -webkit-overflow-scrolling:touch;
+}
+.event-scene .ev-back {
+  position:fixed; top:12px; left:12px; z-index:60;
+  padding:0.5rem 0.9rem; border:none; border-radius:10px;
+  background:var(--bg-card); color:#94A3B8; font-size:0.85rem; font-weight:600; cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+.ev-back:active { transform:scale(0.95); }
+.ev-icon { font-size:3rem; margin-top:0.5rem; }
+.ev-title { font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(1.3rem,5vw,1.8rem); color:var(--aeland-primary); text-align:center; }
+.ev-sub { color:#64748B; font-size:0.8rem; text-align:center; }
+.ev-card {
+  width:100%; max-width:400px; background:var(--bg-card); border-radius:var(--radius);
+  padding:1rem; margin-top:0.3rem;
+}
+.ev-text { color:#E2E8F0; font-size:0.88rem; line-height:1.5; margin-bottom:0.6rem; }
+.ev-choices { display:flex; flex-direction:column; gap:0.4rem; width:100%; max-width:400px; }
+.ev-choice {
+  padding:0.75rem 1rem; border:1px solid rgba(255,255,255,0.08); border-radius:12px;
+  background:var(--bg-card); color:#CBD5E1;
+  font-size:0.82rem; text-align:left; cursor:pointer; transition:all 0.2s;
+}
+.ev-choice:active { background:var(--bg-card-hover); transform:scale(0.98); }
+.ev-result { text-align:center; width:100%; max-width:400px; }
+.ev-result-icon { font-size:3rem; }
+.ev-result-title { font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.3rem; margin:0.3rem 0; }
+.ev-result-title.success { color:#10B981; }
+.ev-result-title.fail { color:#EF4444; }
+.ev-result-text { color:#94A3B8; font-size:0.85rem; margin-bottom:0.5rem; }
+.ev-gains { display:flex; flex-wrap:wrap; justify-content:center; gap:0.4rem; margin-bottom:0.8rem; }
+.ev-gain { display:inline-block; padding:5px 12px; border-radius:8px; background:var(--bg-card); font-size:0.85rem; color:white; font-weight:600; }
+.ev-gain.neg { color:#EF4444; }
+.ev-btn {
+  padding:0.75rem 2rem; border:none; border-radius:12px;
+  background:linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary));
+  color:white; font-family:'Fredoka',sans-serif; font-weight:600; font-size:1rem; cursor:pointer;
+  box-shadow:0 4px 15px rgba(245,158,11,0.3); margin-top:0.4rem;
+}
+.ev-btn:active { transform:scale(0.96); }
+.ev-btn.secondary { background:var(--bg-card); color:#94A3B8; box-shadow:none; }
+
+/* === GOLF MINIGAME === */
+.golf-power-wrap { width:100%; max-width:350px; height:30px; background:var(--bg-card); border-radius:8px; overflow:hidden; position:relative; margin:0.4rem 0; }
+.golf-power-bar { height:100%; width:0%; border-radius:8px; transition:none; }
+.golf-power-target { position:absolute; top:0; height:100%; width:4px; background:white; border-radius:2px; }
+.golf-aim-wrap { width:100%; max-width:350px; height:20px; background:var(--bg-card); border-radius:6px; overflow:hidden; position:relative; margin:0.3rem 0; }
+.golf-aim-needle { position:absolute; top:0; height:100%; width:3px; background:var(--aeland-primary); border-radius:2px; transition:none; }
+.golf-aim-center { position:absolute; top:0; height:100%; width:3px; background:white; left:50%; transform:translateX(-50%); }
+
+/* === MAREL MINIGAME === */
+.marel-field { width:100%; max-width:400px; height:250px; background:var(--bg-card); border-radius:var(--radius); position:relative; overflow:hidden; touch-action:manipulation; }
+.marel-duck { position:absolute; font-size:2rem; cursor:pointer; transition:none; user-select:none; animation:duck-waddle 0.4s ease-in-out infinite alternate; }
+@keyframes duck-waddle { 0%{transform:rotate(-5deg)} 100%{transform:rotate(5deg)} }
+.marel-machine { position:absolute; bottom:0; left:50%; transform:translateX(-50%); font-size:2.5rem; }
+.marel-timer { font-family:'Fredoka',sans-serif; font-weight:700; color:var(--aeland-primary); font-size:1.5rem; }
+.marel-score { font-family:'Fredoka',sans-serif; font-weight:600; color:#E2E8F0; font-size:1rem; }
+
+/* === WEEK SUMMARY === */
+.week-summary {
+  background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 40%,#0F172A 100%);
+  align-items:center; justify-content:center; text-align:center; gap:0.8rem; padding:2rem 1.5rem;
+}
+.week-num { font-family:'Fredoka',sans-serif; font-weight:700; font-size:2rem; color:var(--aeland-primary); }
+.week-act { font-family:'Fredoka',sans-serif; font-weight:600; font-size:0.9rem; color:#64748B; }
+.week-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; max-width:300px; }
+.week-stat { background:var(--bg-card); border-radius:10px; padding:8px; text-align:center; }
+.week-stat__val { font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.2rem; color:#E2E8F0; }
+.week-stat__label { font-size:0.7rem; color:#64748B; }
+.week-event { background:var(--bg-card); border-radius:12px; padding:0.8rem; width:100%; max-width:380px; color:#E2E8F0; font-size:0.85rem; line-height:1.4; }
+.week-quest { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:0.5rem 0.8rem; font-size:0.8rem; color:var(--aeland-primary); width:100%; max-width:380px; }
+
+/* === ENDING === */
+.ending-scene {
+  background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 40%,#0F172A 100%);
+  align-items:center; justify-content:center; text-align:center; gap:1rem; padding:2rem 1.5rem;
+  overflow-y:auto;
+}
+.ending-icon { font-size:4rem; }
+.ending-title { font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(1.5rem,6vw,2.5rem); }
+.ending-text { color:#94A3B8; font-size:0.9rem; line-height:1.5; max-width:380px; }
   </style>
 </head>
 <body>
 <div id="game-root"></div>
 
 <script>
+// ============================================================
+// BÚLAND VS. ÆLAND — SÍÐASTA GOLF FERÐIN — FULL GAME
+// ============================================================
+
 // ===== GAME DATA =====
 const TEAMS = {
-  buland: {
-    id:'buland', name:'Búland', subtitle:'Ævintýraland', emoji:'🏔️',
-    colors:{ primary:'#1B3A5C', secondary:'#4A7C59' },
-    goalName:'Arion Banki stöðu',
-  },
-  aeland: {
-    id:'aeland', name:'Æland', subtitle:'Guð Blessi', emoji:'☀️',
-    colors:{ primary:'#D4A843', secondary:'#E8732A' },
-    goalName:'Guð Blessi stöðu',
-  },
+  buland: { id:'buland', name:'Búland', subtitle:'Ævintýraland', emoji:'🏔️',
+    colors:{ primary:'#1B3A5C', secondary:'#4A7C59' }, goalName:'Arion Banki stöðu' },
+  aeland: { id:'aeland', name:'Æland', subtitle:'Guð Blessi', emoji:'☀️',
+    colors:{ primary:'#D4A843', secondary:'#E8732A' }, goalName:'Guð Blessi stöðu' },
 };
 
 const CHARACTERS = [
-  { id:'benni', name:'Benni', team:'buland', role:'Sölukóngur', emoji:'💼', bg:'#2E7D32',
+  { id:'benni', name:'Benni stóri stjóri', team:'buland', role:'Sölukóngur / Bankastjóri', emoji:'💼', bg:'#2E7D32',
     ability:'Fossvogur Hustle', abilityDesc:'Bonus í öllum söluathöfnum',
     strengths:['money','happiness'], weakness:'Lágt Emotional Stability ef hann missir söluna' },
   { id:'thor', name:'Thor', team:'buland', role:'Sterkur & beinn', emoji:'⚡', bg:'#1565C0',
@@ -286,59 +355,59 @@ const CHARACTERS = [
   { id:'lena', name:'Lena', team:'buland', role:'Róin & smart', emoji:'🧘', bg:'#7B1FA2',
     ability:'Emotional Shield', abilityDesc:'Róar allar deilur og dreka-drama',
     strengths:['emotional'], weakness:'Lág Money generation' },
-  { id:'haddi', name:'Haddi', team:'buland', role:'Verksmiðjueigandi', emoji:'🏭', bg:'#455A64',
-    ability:'Marel Multiplier', abilityDesc:'Money farm úr fiski',
+  { id:'dabbi', name:'Dabbi', team:'buland', role:'Starfsmannastjóri / Prestur', emoji:'🏭', bg:'#455A64',
+    ability:'Marel Multiplier', abilityDesc:'Money farm úr fiski + Duck Wrangler',
     strengths:['money'], weakness:'Lágt Sex/Happiness' },
-  { id:'dori', name:'Dóri', team:'buland', role:'Leyndur charmer', emoji:'🎭', bg:'#C62828',
+  { id:'dori', name:'Dóri', team:'buland', role:'Leyndur charmer / Íþróttavörumaður', emoji:'🎭', bg:'#C62828',
     ability:'Secret Afgreiðsla', abilityDesc:'Extra valkostir í Fossvogi',
     strengths:['sex'], weakness:'Of mikil notkun lækkar Emotional Stability' },
-  { id:'gledi-asgeir', name:'Gleði-Ásgeir', team:'aeland', role:'Party leader', emoji:'🕺', bg:'#E65100',
+  { id:'haddi', name:'Haddi', team:'buland', role:'Fótboltavitringur', emoji:'⚽', bg:'#4CAF50',
+    ability:'Trivia Tackle', abilityDesc:'Sigrar í spurningakeppnum, +Happiness til allra',
+    strengths:['happiness','sex'], weakness:'Lágt Money — bara fótbolti og spurningar' },
+  { id:'geiri-nikk', name:'Geiri Nikk', team:'aeland', role:'Party leader / Danshöfðingi', emoji:'🕺', bg:'#E65100',
     ability:'Gleði-scena Boost', abilityDesc:'Dansar, Happiness + Sex til allra',
     strengths:['happiness','sex'], weakness:'Lágt Money' },
-  { id:'bila-asgeir', name:'Bíla-Ásgeir', team:'aeland', role:'Speed demon', emoji:'🏎️', bg:'#D32F2F',
+  { id:'bila-asgeir', name:'Bíla-Ásgeir', team:'aeland', role:'Speed demon / Slökkviliðsmaður', emoji:'🏎️', bg:'#D32F2F',
     ability:'Sportbíll Turbo', abilityDesc:'Bílar verða mounts með kostum',
     strengths:['money','sex'], weakness:'Lágt Emotional Stability' },
-  { id:'mundi', name:'Mundi', team:'aeland', role:'Sætindakóngur', emoji:'🍬', bg:'#F06292',
+  { id:'mundi', name:'Mundi', team:'aeland', role:'Sætindakóngur / Hálfur Ítali', emoji:'🍬', bg:'#F06292',
     ability:'Candy-Cane High', abilityDesc:'Happiness + Sex í einu',
     strengths:['happiness','sex'], weakness:'Sykursjúkdóms debuff við ofnotkun' },
-  { id:'alli', name:'Alli', team:'aeland', role:'Ölkóngur', emoji:'🍺', bg:'#F9A825',
+  { id:'alli', name:'Alli', team:'aeland', role:'Ölkóngur / Lífbjörgari', emoji:'🍺', bg:'#F9A825',
     ability:'Beer Buff', abilityDesc:'Emotional Stability + Happiness',
     strengths:['emotional','happiness'], weakness:'Veikur í Sex og Money' },
-  { id:'leynigestur', name:'Leynigestur', team:'aeland', role:'Leyndur', emoji:'👤', bg:'#37474F',
+  { id:'leynigestir', name:'Leynigestir', team:'aeland', role:'Reddingaliðið', emoji:'👤', bg:'#37474F',
     ability:'Full Giftur Mode', abilityDesc:'200% boost í öllum kostum',
-    strengths:['emotional','money','happiness','sex'], weakness:'Birtist aðeins þegar allir kostir yfir 80%',
-    locked:true, unlockText:'Opnast þegar allir kostir ná 80%' },
+    strengths:['emotional','money','happiness','sex'], weakness:'Geta ekkert í golfi',
+    locked:true, unlockText:'Birtast þegar allir kostir ná 80%' },
 ];
 
 const LOCATIONS = {
-  // ÆLAND — tighter layout for mobile (within 15-85% range)
-  'glad-hofn':     { id:'glad-hofn',     name:'Glöð-Höfn',         map:'aeland', x:20, y:45, icon:'🎉', color:'#E8732A', desc:'Party-höfuðborg Ælands. Alli ráða ölgerðinni.', boost:{happiness:10,emotional:5} },
-  'nammi-hofn':    { id:'nammi-hofn',    name:'Nammi-Höfn',        map:'aeland', x:40, y:65, icon:'🍬', color:'#F06292', desc:'Sætindaverðslu Munda. Candy-Cane Forest nálægt.', boost:{happiness:8,sex:6} },
-  'wonderville':   { id:'wonderville',   name:'Wonderville',       map:'aeland', x:50, y:20, icon:'🌋', color:'#FF5722', desc:'Virkt eldfjall með gleðisprengingum.', boost:{happiness:12} },
-  'gledi-scena':   { id:'gledi-scena',   name:'Gleði-Scena',       map:'aeland', x:35, y:35, icon:'💃', color:'#D4A843', desc:'Aðal dans- og keppnissvæði.', boost:{happiness:10,sex:8} },
-  'bilar-og-konur':{ id:'bilar-og-konur',name:'Bílar & Konur',     map:'aeland', x:65, y:55, icon:'🏎️', color:'#D32F2F', desc:'Bíla-Ásgeirs rign. Sportbílakeppnir.', boost:{money:6,sex:10} },
-  'gullna-fjollin':{ id:'gullna-fjollin',name:'Gullna Fjöllin',    map:'aeland', x:60, y:20, icon:'⛏️', color:'#FFC107', desc:'Gullnámur – Money farm svæði.', boost:{money:15} },
-  'golflevsi':     { id:'golflevsi',     name:'Golflevsi',         map:'aeland', x:78, y:40, icon:'⛳', color:'#4CAF50', desc:'Golf mini-game, Happiness boost.', boost:{happiness:8,money:4} },
-  'solgeislavellir':{ id:'solgeislavellir',name:'Sölgeislavellir', map:'aeland', x:50, y:45, icon:'☀️', color:'#FFD54F', desc:'Sunny area, +Happiness passive aura.', boost:{happiness:6} },
-  'stacrons-castle':{ id:'stacrons-castle',name:"Joy-Castle",      map:'aeland', x:75, y:22, icon:'🏰', color:'#9C27B0', desc:'High-level dungeon/keppnissvæði.', boost:{emotional:8,happiness:8} },
-  'kaupmannahofn': { id:'kaupmannahofn', name:'Kaupmannahöfn',     map:'aeland', x:80, y:65, icon:'🚢', color:'#2196F3', desc:'Viðskiptahöfn, Money trading.', boost:{money:12} },
-  // BÚLAND — tighter layout for mobile
-  'bulandstindur': { id:'bulandstindur', name:'Búlandstindur',     map:'buland', x:50, y:18, icon:'🏔️', color:'#90CAF9', desc:'Heilagt fjall – Arion Banki sér þaðan. Sigursvæði.', boost:{emotional:15} },
-  'marlbahofn':    { id:'marlbahofn',    name:'Marlbahöfn',        map:'buland', x:30, y:65, icon:'⚓', color:'#5C8AAE', desc:'Hafnarborg og Marel Factory – Money hub.', boost:{money:10} },
-  'marel-factory': { id:'marel-factory', name:'Marel Factory',     map:'buland', x:38, y:52, icon:'🏭', color:'#607D8B', desc:'Verksmiðja Hadda. Money farm með fiskvinnslu.', boost:{money:14} },
-  'budarvik':      { id:'budarvik',      name:'Búðarvík',          map:'buland', x:22, y:45, icon:'🏘️', color:'#8D6E63', desc:'Byrjunarbær, grunnskráning og tutorial.', boost:{emotional:5,happiness:5} },
-  'hraunvollur':   { id:'hraunvollur',   name:'Hraunvöllur',       map:'buland', x:58, y:42, icon:'⛳', color:'#4A7C59', desc:'Golf mini-game á hrauni.', boost:{happiness:8,money:6} },
-  'macronland':    { id:'macronland',    name:'Macronland',        map:'buland', x:18, y:28, icon:'🇫🇷', color:'#1976D2', desc:'Frönsku svæðið, diplomatískar keppnir.', boost:{money:8,emotional:4} },
-  'frakkagolf':    { id:'frakkagolf',    name:'Frakkagolf',        map:'buland', x:25, y:35, icon:'🏌️', color:'#2E7D32', desc:'Premium golf – há Money, lág Sex.', boost:{money:10} },
-  'dimmuskogur':   { id:'dimmuskogur',   name:'Dimmuskógur',       map:'buland', x:68, y:35, icon:'🌲', color:'#1B5E20', desc:'Dökkur skógur – Emotional Stability challenges.', boost:{emotional:12} },
-  'holmsbaer':     { id:'holmsbaer',     name:'Hólmsbær',          map:'buland', x:45, y:50, icon:'🏪', color:'#795548', desc:'Miðbær Búlands, shops og NPC samskipti.', boost:{money:5,happiness:5} },
-  'aevintyra-skogur':{ id:'aevintyra-skogur',name:'Ævintýraskógur',map:'buland', x:72, y:50, icon:'🧙', color:'#7E57C2', desc:'Ævintýrasvæði, quests og power-ups.', boost:{emotional:6,happiness:6} },
-  'fossvogur':     { id:'fossvogur',     name:'Fossvogur',         map:'buland', x:32, y:78, icon:'🏠', color:'#E8732A', desc:'SIGNATURE: Side Hustle – seldu treyjur húsmæðrum!', boost:{sex:8,money:8}, special:true },
-  'gulla-golfvollur':{ id:'gulla-golfvollur',name:'Gullni Golf',   map:'buland', x:78, y:28, icon:'💰', color:'#FFC107', desc:'Gulllindir og golfvöllur – Money.', boost:{money:10} },
-  'vatnsenda':     { id:'vatnsenda',     name:'Vatnsenda',         map:'buland', x:82, y:18, icon:'🌊', color:'#0277BD', desc:'Norðursvæði, hættulegt en há rewards.', boost:{money:12,emotional:8} },
+  'brekkuas-ae':    { id:'brekkuas-ae',    name:'Brekkuás',            map:'aeland', icon:'🎉', color:'#E8732A', desc:'Party-höfuðborg Ælands. Alli ráðar ölgerðinni.', boost:{happiness:10,emotional:5} },
+  'nordur-graenland':{ id:'nordur-graenland',name:'Norður-Grænland',   map:'aeland', icon:'🍬', color:'#F06292', desc:'Sætindaverslun Munda. Candy-Cane Forest nálægt.', boost:{happiness:8,sex:6} },
+  'gula-rymid':     { id:'gula-rymid',     name:'Gula rýmið',         map:'aeland', icon:'🌋', color:'#FF5722', desc:'Virkt eldfjall með gleðisprengingum.', boost:{happiness:12} },
+  'old-trafford':   { id:'old-trafford',   name:'Old Trafford',        map:'aeland', icon:'💃', color:'#D4A843', desc:'Fótboltakeppni! Man United vs Liverpool.', boost:{happiness:10,sex:8} },
+  'anfield':        { id:'anfield',        name:'Anfield',             map:'aeland', icon:'🏎️', color:'#D32F2F', desc:'Bíla-Ásgeirs rign. Sportbílakeppnir og rematch.', boost:{money:6,sex:10} },
+  'breidholtid':    { id:'breidholtid',    name:'Breiðholtið',         map:'aeland', icon:'⛏️', color:'#FFC107', desc:'Gullnámur — Money farm svæði.', boost:{money:15} },
+  'lokadur-golf':   { id:'lokadur-golf',   name:'Lokaður golfvöllur',  map:'aeland', icon:'⛳', color:'#4CAF50', desc:'Enginn má spila — nema þú. Golf æfing.', boost:{happiness:8,money:4} },
+  'snaeland-video': { id:'snaeland-video', name:'Snæland Videó',       map:'aeland', icon:'☀️', color:'#FFD54F', desc:'Gamalt myndbandaleigusvæði. Nostalgía og training.', boost:{happiness:6} },
+  'ibudin-damon':   { id:'ibudin-damon',   name:'Íbúð Damon Albarn',   map:'aeland', icon:'🏰', color:'#9C27B0', desc:'Leyndur high-level staður. Song 2 bíður!', boost:{emotional:8,happiness:8} },
+  'midbaerinn':     { id:'midbaerinn',     name:'Miðbærinn',           map:'aeland', icon:'🚢', color:'#2196F3', desc:'Viðskiptahöfn, Money trading.', boost:{money:12} },
+  'bulandstindur':  { id:'bulandstindur',  name:'Búlandstindur',       map:'buland', icon:'🏔️', color:'#90CAF9', desc:'Heilagt fjall — Arion Banki sér þaðan.', boost:{emotional:15} },
+  'kjarvalstofa':   { id:'kjarvalstofa',   name:'Kjarvalstofa',        map:'buland', icon:'⚓', color:'#5C8AAE', desc:'Hafnarborg — sannfærðu bankann um lán!', boost:{money:10} },
+  'marel-factory':  { id:'marel-factory',  name:'Marel Factory',       map:'buland', icon:'🏭', color:'#607D8B', desc:'SIGNATURE: Settu endur í kjúklingavél!', boost:{money:14,sex:6}, special:true },
+  'brekkuas-bu':    { id:'brekkuas-bu',    name:'Brekkuás',            map:'buland', icon:'🏘️', color:'#8D6E63', desc:'Byrjunarbær — hér skrifuðu allir undir sáttmálann.', boost:{emotional:5,happiness:5} },
+  'utibuid':        { id:'utibuid',        name:'Útibúið í Borgartúni',map:'buland', icon:'⛳', color:'#4A7C59', desc:'Bankinn — síðasti fundur Benna.', boost:{happiness:8,money:6} },
+  'macron-budin':   { id:'macron-budin',   name:'Macron búðin',        map:'buland', icon:'🇫🇷', color:'#1976D2', desc:'Íþróttavöruverslun Dóra. Verðstríð!', boost:{money:8,emotional:4} },
+  'golf-hermir':    { id:'golf-hermir',    name:'Golf hermir',         map:'buland', icon:'🏌️', color:'#2E7D32', desc:'Golf-simulator. Premium æfing!', boost:{money:10} },
+  'whatsapp-rasin': { id:'whatsapp-rasin', name:'WhatsApp rásin',      map:'buland', icon:'🌲', color:'#1B5E20', desc:'Hópsamtal hópsins. Drama challenges!', boost:{emotional:12} },
+  'gradibaer':      { id:'gradibaer',      name:'Graðibær',            map:'buland', icon:'🏪', color:'#795548', desc:'Miðbær Búlands, shops og NPC samskipti.', boost:{money:5,happiness:5} },
+  'macron-budin-2': { id:'macron-budin-2', name:'Macron búðin II',     map:'buland', icon:'🧙', color:'#7E57C2', desc:'Keppinautinn! Quests og power-ups.', boost:{emotional:6,happiness:6} },
+  'fossvogur':      { id:'fossvogur',      name:'Fossvogur',           map:'buland', icon:'🏠', color:'#E8732A', desc:'SIGNATURE: Seldu treyjur húsmæðrum!', boost:{sex:8,money:8}, special:true },
+  'hraunid':        { id:'hraunid',        name:'Hraunið',             map:'buland', icon:'💰', color:'#FFC107', desc:'Golfvöllur á hrauni. Bolti í gjá, vindur af hafi.', boost:{money:10} },
+  'graenland':      { id:'graenland',      name:'Grænland',            map:'buland', icon:'🌊', color:'#0277BD', desc:'Norðursvæði — hættulegt en há rewards.', boost:{money:12,emotional:8} },
 };
-
-const START_LOCATIONS = { buland:'budarvik', aeland:'glad-hofn' };
+const START_LOCATIONS = { buland:'brekkuas-bu', aeland:'brekkuas-ae' };
 
 const STAT_META = [
   { key:'emotional', icon:'❤️', color:'var(--stat-emotional)', label:'Emotional Stability' },
@@ -347,78 +416,312 @@ const STAT_META = [
   { key:'sex',       icon:'🔥', color:'var(--stat-sex)',       label:'Sex' },
 ];
 const STAT_KEYS = ['emotional','money','happiness','sex'];
+const STAT_ICONS = {emotional:'❤️',money:'💰',happiness:'😊',sex:'🔥'};
+
+// ===== FOSSVOGUR NPC DATA =====
+const HUSMAEDUR = [
+  { id:'gudrun', name:'Guðrún', emoji:'🧶', bg:'#8E6BAF', personality:'Prjónaklúbbsformaður',
+    desc:'Situr í stofunni með prjónunum og horfir á Kastljós.',
+    greeting:'Góðan daginn elskan, ertu með eitthvað fallegt?', difficulty:0.3 },
+  { id:'sigridur', name:'Sigríður', emoji:'☕', bg:'#795548', personality:'Kaffidrottning',
+    desc:'Drekkur sjötta bolla kaffi dagsins.',
+    greeting:'Komdu inn, ég var einmitt að setja á kaffi...', difficulty:0.4 },
+  { id:'helga', name:'Helga', emoji:'🌸', bg:'#4CAF50', personality:'Garðyrkjufreak',
+    desc:'Stendur í garðinum með garðskeru og stóran hatt.',
+    greeting:'Ó hæ! Ég var einmitt að klippa rósirnar mínar.', difficulty:0.35 },
+  { id:'bjork', name:'Björk', emoji:'💅', bg:'#E91E63', personality:'VIP Golfkona',
+    desc:'Ný úr golfinu, í merkjafötum frá toppi til tár.',
+    greeting:'Hvað viltu? Ég á fríið mitt.', difficulty:0.65, vip:true },
+  { id:'johanna', name:'Jóhanna', emoji:'📱', bg:'#2196F3', personality:'Facebook-addicted',
+    desc:'Skoðar Facebook-hópinn "Húsmæður í Fossvogi" á símanum.',
+    greeting:'Bíddu ég var að lesa post... ok hvað?', difficulty:0.3 },
+  { id:'steinunn', name:'Steinunn', emoji:'🍰', bg:'#FF9800', personality:'Bakar alltaf',
+    desc:'Lykt af nýbökuðum bollum berst út um dyrnar.',
+    greeting:'Viltu smakka? Ég var einmitt að baka snúða!', difficulty:0.25 },
+];
+
+// ===== LOCATION EVENTS =====
+// Each location returns {text, choices:[{text, outcome:{stat:amt,...}, resultText}]}
+function getLocationEvent(locId) {
+  const char = CHARACTERS.find(c => c.id === state.character);
+  const charName = char ? char.name : 'Þú';
+  const isCharId = (id) => state.character === id;
+  const E = {
+  'brekkuas-ae': {
+    text:`Velkomin í Brekkuás — party-höfuðborg Ælands! Alli hefur þegar sett á bjór og stemmingin er í toppi. „Þetta verður SÍÐASTA golfferðin — og hún verður EPIC!" segir einhver.`,
+    choices:[
+      { text:'Skála með öllum og heita stóru!', outcome:{happiness:8,emotional:4}, resultText:'Allir skála og stemningin er í toppi! Sáttmálinn er undirritaður á servíettu.' },
+      { text:'Fara rólega — skoða hverfið.', outcome:{emotional:6,money:3}, resultText:'Þú skoðar hverfið og finnur leyndan krá með ódýru bjóri.' },
+      { text:'Byrja strax að skipuleggja ferðina.', outcome:{money:5,emotional:5}, resultText:'Þú tekur stjórnina. Allir eru hrifnir — „Þetta er leiðtoginn okkar!"' },
+    ]
+  },
+  'brekkuas-bu': {
+    text:`Brekkuás — byrjunarstaðurinn. Vinir hittast og gera sáttmálann: ein ferð enn, ein golfferð sem toppar allt. Benni stóri stjóri dregur fram servíettu úr vasanum: „SKRIFIÐ UNDIR."`,
+    choices:[
+      { text:'Skrifa undir með stórum svip!', outcome:{happiness:8,emotional:5}, resultText:'Allir skrifa undir. Þetta er opinbert — síðasta golfferðin er á dagskrá!' },
+      { text:'Lesa smáa letrið á servíettunni...', outcome:{emotional:6,money:4}, resultText:'Þú finnur að Benni hefur bætt við „bankastjóri fær 10% af öllu" — en allir hlæja.' },
+      { text:'Biðja um kaffi fyrst.', outcome:{happiness:5,emotional:3}, resultText:'Sigríður setur á kaffi og allir slappa í 10 mínútur. Gott upphaf.' },
+    ]
+  },
+  'kjarvalstofa': {
+    text:`Kjarvalstofa — bankinn. ${isCharId('benni') ? 'Þú mætir í snyrtilega pressaðri skyrtu.' : 'Benni stóri stjóri er þegar mættur í jakka.'} Bankastjóri NPC horfir á ykkur yfir gleraugu: „Golf...ferð? Og þið viljið LÁN?"`,
+    choices:[
+      { text:'„Þetta er ekki ferð — þetta er FJÁRFESTING."', outcome:{money:12,happiness:4}, resultText:'Bankastjórinn er svo hrifinn af kynningunni að hann samþykkir lánið. Money rennur inn!' },
+      { text:'Sýna tölfræði um golfmarkaðinn.', outcome:{money:8,emotional:5}, resultText:'Bankastjórinn les gögnin og kinkar kolli: „Hmm, þetta er reyndar athugandi..."' },
+      { text:'Reyna að þykjast vera ríkur.', outcome:{money:4,happiness:-3}, resultText:'Bankastjórinn sér í gegnum þig. „Komdu aftur þegar þú átt eitthvað."' },
+    ]
+  },
+  'nordur-graenland': {
+    text:`Norður-Grænland — Sætindaverslun Munda! En eitthvað er að: leyndarsýróp Munda hefur horfið! ${isCharId('mundi') ? '„MAMMA MIA! Sýrópin mín!"' : 'Mundi er í uppnámi.'} Einhver sá grunsamlegan mann hlaupa í áttina að Candy-Cane Forest.`,
+    choices:[
+      { text:'Elta þjófinn inn í Candy-Cane Forest!', outcome:{happiness:10,sex:5,money:3}, resultText:'Þú nærð þjófnum — það var gamall keppinautur sem vildi afrita uppskriftina. Mundi er eilíflega þakklátur!' },
+      { text:'Rannsaka vettvanginn vandlega.', outcome:{emotional:8,happiness:4}, resultText:'Þú finnur ummerkjalaust fingrafar sem leiðir til þjófsins. Mundi mun borga vel fyrir þetta.' },
+      { text:'Bjóðast til að gera nýtt sýróp.', outcome:{happiness:6,sex:8}, resultText:'Sýrópið þitt er BETRA en upprunalega! Mundi er hrifinn: „Perfetto! Þú ert genius!"' },
+    ]
+  },
+  'gula-rymid': {
+    text:`Gula rýmið — virkt eldfjall! Jörðin skelfur undir fótum, en gleðisprengingar skjóta upp úr gosopinu eins og flugeldar. Þetta er Ælands kraftmestu svæðið.`,
+    choices:[
+      { text:'Dansa við eldfjallið!', outcome:{happiness:14,sex:4}, resultText:'Gleðisprengingarnar ljóma og þú finnur fyrir ótrúlegri orku streyma í gegnum þig!' },
+      { text:'Safna gullmolum úr hrauninu.', outcome:{money:8,emotional:3}, resultText:'Gullmolar finnast í hrauninu. Hættulegt en arðbært!' },
+      { text:'Hugleiða og finna innri frið.', outcome:{emotional:12,happiness:3}, resultText:'Kraftur eldfjallsins gefur þér rólega innri vissu. Þú veist hvað þú vilt.' },
+    ]
+  },
+  'old-trafford': {
+    text:`Old Trafford! ${isCharId('haddi') ? 'Þetta er draumurinn þinn!' : 'Haddi er nánast í tárum af gleði.'} Stórkeppni í fótbolta — Man United vs Liverpool! Geiri Nikk skipuleggur allt. „Sigurvegari fær bónus flugmiða til Manchester!"`,
+    choices:[
+      { text:'Spila af fullum krafti!', outcome:{happiness:12,sex:6,emotional:-3}, resultText:'SIGUR! Leikurinn var ótrúlegur. Þú skoraðir sigurmarkið á síðustu mínútu!' },
+      { text:'Nota taktík og klókskap.', outcome:{happiness:8,emotional:8,money:4}, resultText:'Snjöll leikáætlun borgar sig. Þú vinnst ekki en þú tapar ekki heldur — og fær bónuspunkta.' },
+      { text:'Vera dómari í staðinn.', outcome:{emotional:10,happiness:5}, resultText:'Sem dómari ferðu í taugar allra — en heldur friðinn. Allir virða þig á endanum.' },
+    ]
+  },
+  'anfield': {
+    text:`Anfield — Bíla-Ásgeirs lén! ${isCharId('bila-asgeir') ? 'Þú kemur á fullum hraða í sportbílnum.' : 'Bíla-Ásgeir hefur LOKSINS svarað í símann!'} Hann býður upp á bílakeppni í gegnum borgina. Veðmál: sá sem kemst fyrst til Manchester fær VIP sæti á golfvellinum.`,
+    choices:[
+      { text:'Keppast á fullum hraða! 🏎️', outcome:{sex:12,money:5,emotional:-4}, resultText:'FYRST Í MARK! Adrenalínið er í toppi. Bíla-Ásgeir segir: „Ég var að slökkva eld. Hvað gerðir þú?"' },
+      { text:'Keyra rólega og njóta ferðarinnar.', outcome:{happiness:8,emotional:6}, resultText:'Þú kemst í mark síðast en hafðir bestu ferðina. Útsýnið var ótrúlegt.' },
+      { text:'Veðja á annan ökumann.', outcome:{money:10,happiness:4}, resultText:'Veðmálið skilar sér! Þú valdir réttan mann og peningarnir renna inn.' },
+    ]
+  },
+  'breidholtid': {
+    text:`Breiðholtið — gullnámurnar! Hér er fólk sem skuldar öllum peninga. „Ég borga á morgun" er algengasta setningin. Þú þarft að safna skuldum til að fjármagna golfferðina.`,
+    choices:[
+      { text:'Krefja alla harðlega!', outcome:{money:16,emotional:-5,happiness:-3}, resultText:'Þú safnar miklum peningum en gerir þig óvinsælan. Einn borgaði í kameldýramyntum?!' },
+      { text:'Bjóða greiðsluáætlun.', outcome:{money:10,emotional:5}, resultText:'Fólk er þakklát og borgar vel. Einn NPC gefur þér jafnvel bónusgreiðslu.' },
+      { text:'Skiptast á þjónustu.', outcome:{money:8,happiness:6,sex:3}, resultText:'Þú hjálpar einhverjum og fær greitt í verki. Allir eru ánægðir.' },
+    ]
+  },
+  'lokadur-golf': {
+    text:`Lokaður golfvöllur — ENGINN má spila hér, segir skilti við hlið. En liðið þarf æfingu! Öryggisvörður gengur fram og til baka.`,
+    choices:[
+      { text:'Smygla þér inn á meðan vörðurinn er snúinn!', outcome:{happiness:10,sex:6,emotional:-3}, resultText:'Þú kemst inn! Æfingin er frábær og þú lærir nýja tækni.' },
+      { text:'Tala við verðinn og sannfæra hann.', outcome:{emotional:8,happiness:6}, resultText:'Vörðurinn reynist vera gamall golfmaður. Hann leyfir þér inn OG gefur þér ráð!' },
+      { text:'Æfa þig utan girðingarinnar.', outcome:{happiness:5,emotional:5}, resultText:'Þú æfir þig utan hans og lærð þó eitthvað. Betra en ekkert!' },
+    ]
+  },
+  'snaeland-video': {
+    text:`Snæland Videó — nostalgia ríkir! Gamlar VHS spólur, sjónvarpsleikir og loft af popcorni. Mundi breytti þessu í upplýsingamiðstöð. Gamlar golfmyndböndin gætu verið gagnleg...`,
+    choices:[
+      { text:'Horfa á golfmyndböndin frá 90\'s.', outcome:{happiness:8,emotional:4}, resultText:'Þú lærð klassíska tækni sem nútímagolfarar hafa gleymt. Og nostalgían er ómetanleg!' },
+      { text:'Leita að sérstöku myndbandi.', outcome:{happiness:5,money:6,sex:3}, resultText:'Þú finnur sjaldgæfa golfmyndband sem er orðin verðmæt á markaðnum!' },
+      { text:'Bara chilla og njóta nostalgíunnar.', outcome:{happiness:10,emotional:6}, resultText:'Þú setur þig niður, borðar popcorn og minnist bestu stundanna. Pure happiness.' },
+    ]
+  },
+  'ibudin-damon': {
+    text:`Íbúð Damon Albarn! Geiri Nikk þekkir einhvern sem þekkir einhvern... og eftir þrjú símtöl stendur þú fyrir framan dyrnar. Damon sjálfur opnar: „Alright lads, come in."`,
+    choices:[
+      { text:'Biðja hann um að spila Song 2! 🎸', outcome:{happiness:15,emotional:10,sex:5}, resultText:'WOO-HOO! Damon spilar Song 2 og allir dansa. Þetta er sameinandi augnablikið — liðið hefur aldrei verið sterkara!' },
+      { text:'Spjalla um tónlist og líf.', outcome:{emotional:12,happiness:8}, resultText:'Damon segir djúpar sögur og þú uppgötvar nýja hluti um sjálfan þig. Kafkaeskt en fallegt.' },
+      { text:'Biðja um selfie.', outcome:{happiness:8,sex:6}, resultText:'Damon hlær: „Sure mate." Myndin fer viral og allir vilja hanga með ykkur.' },
+    ]
+  },
+  'midbaerinn': {
+    text:`Miðbærinn — viðskiptahöfn Ælands. Skip koma og fara, kaupmenn hrópa verð, og fiskur lyktir af öllu. Hér er Money í loftinu.`,
+    choices:[
+      { text:'Kaupa og selja vörur.', outcome:{money:14,happiness:3}, resultText:'Þú ert náttúrulegur kaupmaður! Fiskurinn selst vel og hagnaðurinn er mikill.' },
+      { text:'Finna aukavinnu á bryggju.', outcome:{money:8,emotional:5,happiness:3}, resultText:'Erfiðisvinna á bryggju — en launin eru góð og þú finnur styrk í sjálfum þér.' },
+      { text:'Kanna leynilegar viðskiptaleiðir.', outcome:{money:10,sex:5,emotional:-2}, resultText:'Leynilegar leiðir skila meiri peningum, en samviskan nagast aðeins...' },
+    ]
+  },
+  'bulandstindur': {
+    text:`Búlandstindur — heilaga fjallið! Frá toppinum sést Arion Banki í fjarska. Vindur þýtur og þú finnur fyrir einhverju... guðlegu? Eða er það bara súrefnisskortur?`,
+    choices:[
+      { text:'Hugleiða á toppinum.', outcome:{emotional:16,happiness:5}, resultText:'Þú finnur innri frið sem þú hefur aldrei fundið. Allt skýrist — þú veist hvað þú vilt í lífinu.' },
+      { text:'Hrópa af fjallinu!', outcome:{happiness:12,emotional:5,sex:3}, resultText:'„ÉG ER Á TOPPI HEIMSINS!" Bergmálið endurómar og þú hlær hærra en nokkurn tíma.' },
+      { text:'Safna steinum af toppinum.', outcome:{money:4,emotional:8}, resultText:'Steinarnir eru fallegir. Einn gæti verið verðmætur... eða bara steinn. Þú líður vel hvort sem er.' },
+    ]
+  },
+  'marel-factory': null, // Handled by mini-game
+  'utibuid': {
+    text:`Útibúið í Borgartúni — bankinn! ${isCharId('benni') ? 'Þetta er ÞINN fundur.' : 'Benni stóri stjóri mætir í besta jakkanum sínum.'} Bankastjóri skoðar pappírana: „Ef tölurnar standast... gæti þetta gengið."`,
+    choices:[
+      { text:'Sýna frábærar tölur og tölfræði.', outcome:{money:12,emotional:5}, resultText:'Bankastjóri klappar: „Lánið er samþykkt!" Flugmiðarnir eru í sjónmáli!' },
+      { text:'Nota persónulegan sjarma.', outcome:{money:8,happiness:6,sex:3}, resultText:'Bankastjórinn er hrifinn af þínum persónuleika. Lánið er samþykkt — en með háum vöxtum.' },
+      { text:'Leggja fram tryggingu.', outcome:{money:10,emotional:4,happiness:-2}, resultText:'Trygging samþykkt. Lánið er tryggt — en þú settir golfkylfu þína að veði.' },
+    ]
+  },
+  'macron-budin': {
+    text:`Macron búðin! ${isCharId('dori') ? 'ÞÚ rekur þessa búð!' : 'Dóri er í sínu réttu umhverfi.'} Íþróttavörur alls staðar — en keppinautur hefur opnað Macron búðin II hinum megin við götuna! Verðstríð er hafið!`,
+    choices:[
+      { text:'Lækka verðin og selja meira!', outcome:{money:6,happiness:5,emotional:-3}, resultText:'Þú selur MIKIÐ en hagnaðurinn er lítill. Keppinauturinn er pirraður — en viðskiptavinirnir elska þig.' },
+      { text:'Hækka gæðin og verðið!', outcome:{money:12,emotional:5}, resultText:'Premium nálgun! Færri kaupa en þeir sem kaupa borga vel. Dóri segir: „Þetta er LIFESTYLE."' },
+      { text:'Semja frið við keppinautinn.', outcome:{money:8,happiness:8,emotional:6}, resultText:'Þið sameinið búðirnar! Saman eruð þið sterkari — og hagnaðurinn tvöfaldast.' },
+    ]
+  },
+  'golf-hermir': null, // Handled by golf mini-game
+  'whatsapp-rasin': {
+    text:`WhatsApp rásin — hópsamtal liðsins. Síminn bípar ENDALAUST. Einhver sendi skilaboð sem var misskilið og NÚ er drama. ${isCharId('lena') ? 'Þú sérð stafsetningarvillu sem afhjúpar lygina!' : 'Lena hefur fundið stafsetningarvillu í skilaboðunum.'}`,
+    choices:[
+      { text:'Sætta alla — „Þetta er misskilningur!"', outcome:{emotional:14,happiness:5}, resultText:'Þú greiðir úr drama-inu. Hópurinn styrkist og allir sættast. Lena klappar.' },
+      { text:'Blanda þér ekki í — grípa popcorn.', outcome:{happiness:8,sex:3,emotional:-4}, resultText:'Þú horfir á drama-ið eins og sjónvarpsþátt. Skemmtilegt — en nú trúir enginn þér.' },
+      { text:'Finna raunverulegan sökudólg.', outcome:{emotional:10,money:5,happiness:3}, resultText:'Þú greinir stafsetningarvilluna! Hún afhjúpar svindlara sem reyndi að skipta um liði. Allir eru þakklátir.' },
+    ]
+  },
+  'gradibaer': {
+    text:`Graðibær — miðbær Búlands! Shops, NPC samskipti, og stemming. Leynigestir eru séðir hérna stundum — random manneskjur sem enginn þekkir en bjarga alltaf deginum.`,
+    choices:[
+      { text:'Versla og fá tilboð.', outcome:{money:6,happiness:7}, resultText:'Góð tilboð! Þú finnur jafnvel ódýra golfkylfu sem virkar betur en dýrar.' },
+      { text:'Tala við NPC-a á kaffihúsinu.', outcome:{emotional:5,happiness:5,sex:4}, resultText:'Skemmtilegt samtal yfir kaffi. Einn NPC gefur þér leynilegan gossip um andstæðingana.' },
+      { text:'Leita að Leynigestunum.', outcome:{happiness:4,emotional:4,money:4,sex:4}, resultText:'Þú finnur mann í röngum skóm sem segir: „Hæ, veistu hvað, ég þekki nákvæmlega manninn sem getur lagað þetta."' },
+    ]
+  },
+  'macron-budin-2': {
+    text:`Macron búðin II — keppinautinn! Búðin er full af vörum á ódýru verði. Eigandinn viðurkennir: „Ég er búinn að leggja á mig." Hann vill sættast — eða berjast til enda.`,
+    choices:[
+      { text:'Kaupa búðina og sameina!', outcome:{money:4,emotional:8,happiness:6}, resultText:'Þú kaupir búðina! Sameining! Verðstríðinu er lokið og allir græða.' },
+      { text:'Keppa áfram — drepa keppnina!', outcome:{money:10,sex:5,emotional:-4}, resultText:'Þú vinnur verðstríðið! Keppinauturinn gefst upp. En ertu stolt af þér?' },
+      { text:'Bjóða honum að koma á golfferðina.', outcome:{happiness:10,emotional:6,sex:3}, resultText:'Keppinauturinn er hreyfður. „Enginn hefur boðið mér neitt svona." Nýr vinur!' },
+    ]
+  },
+  'fossvogur': null, // Handled by Fossvogur mini-game
+  'hraunid': null, // Handled by golf mini-game
+  'graenland': {
+    text:`Grænland — norðursvæðið! Hættulegt en verðlaunin eru mikil. Alli (krabbameinslæknirinn) þekkir einhvern á sjúkrahúsinu sem skuldar honum greiða. Veðrið er hræðilegt.`,
+    choices:[
+      { text:'Heimsækja sjúkrahúsið og safna skuldinni.', outcome:{money:14,emotional:5}, resultText:'Skuldin er greidd! Alli segir: „Rannsóknirnar sýna að einn bjór á dag..." og bjóðar öllum.' },
+      { text:'Kanna hættulega fjörðinn.', outcome:{money:10,emotional:8,happiness:-3}, resultText:'Fjörðurinn er hættulegur en þar finnst falinn fjársjóður! Þú ert blautur en ríkur.' },
+      { text:'Bíða í skýli og spila spil.', outcome:{happiness:8,emotional:6}, resultText:'Þú bíður úrkomuna í skýli og spilar spil við aðra ferðamenn. Góð stund.' },
+    ]
+  },
+  };
+  return E[locId] || null;
+}
+
+// ===== FOSSVOGUR DIALOGUE =====
+function getFossDialogue(npc, jerseyTeam, playerTeam) {
+  const ownTeam = jerseyTeam === playerTeam;
+  const teamName = TEAMS[jerseyTeam].name;
+  const teamEmoji = TEAMS[jerseyTeam].emoji;
+  const dialogues = [
+    { npcText: npc.greeting,
+      choices: [
+        { text:`„Sæl! Ég er með ${teamEmoji} ${teamName} treyjur á útsölu!"`, score:1 },
+        { text:`„Hæ, hvað ertu glæsileg í dag! Ertu með smá tíma?"`, score:2 },
+        { text:`„Heyrðu, þetta er tækifæri sem þú vilt EKKI missa af."`, score:0 },
+        { text:`„Sorry að trufla, ég var bara að kíkja á góðan daginn."`, score:1 },
+      ]},
+    { npcText: null,
+      choices: [
+        { text:`„Þessi treyja er úr premium efni — alvöru gæði."`, score:2 },
+        { text:`„Allir í hverfinu kaupa þessar, þú vilt ekki vera útundan!"`, score:1 },
+        { text:`„Ég get gefið þér sérstakt verð, bara fyrir þig."`, score:1 },
+        { text:`„Treyjurnar styðja ${teamName} — er það ekki frábært?"`, score: ownTeam ? 2 : 0 },
+      ]},
+    { npcText: null,
+      choices: [
+        { text:`„Svo... á ég að pakka einni inn fyrir þig?"`, score:1 },
+        { text:`„Takk fyrir spjallið — en treyjurnar seljast hratt!"`, score:2 },
+        { text:`„Þú myndir líta svo vel út í þessari treyju."`, score:1 },
+      ]},
+  ];
+  const reactions = {
+    gudrun: ['Ó þetta er nú fallegt...', 'Hmm, maðurinn minn hefur afmæli bráðum...'],
+    sigridur: ['Viltu kaffi á meðan ég skoða?', 'Þetta er nú ágætt efni...'],
+    helga: ['Ó hvað þetta væri notalegt!', 'Liturinn er svo fallegur...'],
+    bjork: ['Hmph. Ég á nóg af treyjum.', 'Kannski ef verðið er rétt.'],
+    johanna: ['OMG þetta er svo cute!', 'Stelpur í hópnum eru að deyja yfir þessu!'],
+    steinunn: ['Viltu snúð á meðan?', 'Ég ætla bara að taka tvær!'],
+  };
+  dialogues[1].npcText = reactions[npc.id]?.[0] || 'Hmm, segðu mér meira...';
+  dialogues[2].npcText = reactions[npc.id]?.[1] || 'Já, þetta er nú athugandi...';
+  return dialogues;
+}
+
+// ===== GOLF TRIVIA (for Old Trafford / Haddi) =====
+const FOOTBALL_TRIVIA = [
+  { q:'Hvaða lið vann Champions League 2005 eftir að hafa verið 3-0 undir?', a:['Liverpool','AC Milan','Barcelona','Real Madrid'], correct:0 },
+  { q:'Hver skoraði „Hand of God" markið?', a:['Pelé','Maradona','Zidane','Messi'], correct:1 },
+  { q:'Hvaða ár var fyrsti íslenski leikmaðurinn í ensku úrvalsdeildinni?', a:['1997','2000','2003','2006'], correct:2 },
+  { q:'Hvaða lið hefur unnið flest Englandsmeistaramót?', a:['Liverpool','Arsenal','Manchester United','Chelsea'], correct:2 },
+  { q:'Hversu margir leikmenn eru á velli í fótboltaleik?', a:['20','22','24','18'], correct:1 },
+  { q:'Hvaða land vann HM 2018?', a:['Brasilía','Króatía','Frakkland','Belgía'], correct:2 },
+  { q:'Hver er markahæstur allra tíma í Champions League?', a:['Messi','Ronaldo','Lewandowski','Raúl'], correct:1 },
+  { q:'Hvaða lið vann fyrstu ensku deildina 1888-89?', a:['Preston North End','Aston Villa','Everton','Blackburn'], correct:0 },
+];
 
 // ===== STATE =====
 const state = {
-  team:null, character:null, day:1,
+  team:null, character:null,
   currentLocation:null, currentMap:null,
   stats:{ emotional:30, money:20, happiness:35, sex:15 },
   visitedLocations:[],
+  golfSkill:0,
+  fossvogur:{ jerseysSold:0, level:1, landrad:0, visits:0, ownTeamSold:0, otherTeamSold:0 },
+  marel:{ ducksProcessed:0, bestScore:0 },
 };
+function getTotalScore() { return STAT_KEYS.reduce((sum,k)=>sum+state.stats[k],0); }
+function getLocationsLeft() {
+  const total=Object.keys(LOCATIONS).length;
+  return total - state.visitedLocations.length;
+}
 const listeners = new Map();
-function on(key, fn) {
-  if (!listeners.has(key)) listeners.set(key, new Set());
-  listeners.get(key).add(fn);
-}
-function notify(key) {
-  const fns = listeners.get(key);
-  if (fns) fns.forEach(fn => fn(state[key]));
-}
-function setStat(k, v) { state.stats[k] = Math.max(0, Math.min(100, v)); notify('stats'); }
-function addStat(k, amt) { setStat(k, state.stats[k] + amt); }
-function saveGame() { try { localStorage.setItem('bva-save', JSON.stringify(state)); } catch(e){} }
-function loadGame() {
-  try {
-    const d = JSON.parse(localStorage.getItem('bva-save'));
-    if (d && d.character) { Object.assign(state, d); return true; }
-  } catch(e){}
-  return false;
+function on(key, fn) { if(!listeners.has(key))listeners.set(key,new Set()); listeners.get(key).add(fn); }
+function notify(key) { const fns=listeners.get(key); if(fns) fns.forEach(fn=>fn(state[key])); }
+function setStat(k,v) { state.stats[k]=Math.max(0,Math.min(100,v)); notify('stats'); }
+function addStat(k,amt) { setStat(k, state.stats[k]+amt); }
+function applyGains(gains) { Object.entries(gains).forEach(([k,v])=>{ if(STAT_KEYS.includes(k)) addStat(k,v); }); }
+function saveGame() { try { localStorage.setItem('bva-save',JSON.stringify(state)); } catch(e){} }
+function loadGame() { try { const d=JSON.parse(localStorage.getItem('bva-save')); if(d&&d.character){Object.assign(state,d);return true;} } catch(e){} return false; }
+function checkManchester() { return getTotalScore() >= 300; }
+function gainsHtml(gains) {
+  return Object.entries(gains).filter(([k])=>STAT_KEYS.includes(k)).map(([k,v]) =>
+    `<div class="ev-gain ${v<0?'neg':''}">${STAT_ICONS[k]} ${v>0?'+':''}${v}%</div>`
+  ).join('');
 }
 
 // ===== SCENE MANAGER =====
 const root = document.getElementById('game-root');
 const scenes = {};
 let currentScene = null;
-
-function registerScene(name, s) { scenes[name] = s; }
-function goScene(name, data) {
-  if (currentScene && scenes[currentScene]) {
-    scenes[currentScene].el?.classList.remove('active');
-  }
-  currentScene = name;
-  const s = scenes[name];
-  if (!s.el) {
-    s.el = s.create();
-    s.el.classList.add('scene');
-    root.appendChild(s.el);
-  }
-  if (s.onEnter) s.onEnter(data);
-  requestAnimationFrame(() => s.el.classList.add('active'));
+function registerScene(name,s) { scenes[name]=s; }
+function goScene(name,data) {
+  if(currentScene && scenes[currentScene]) scenes[currentScene].el?.classList.remove('active');
+  currentScene=name;
+  const s=scenes[name];
+  if(!s.el) { s.el=s.create(); s.el.classList.add('scene'); root.appendChild(s.el); }
+  if(s.onEnter) s.onEnter(data);
+  requestAnimationFrame(()=>s.el.classList.add('active'));
 }
 
 // ===== MAIN MENU =====
 registerScene('mainMenu', {
   create() {
-    const el = document.createElement('div');
-    el.className = 'main-menu';
-    el.innerHTML = `
-      <div style="opacity:0.4;font-size:3rem;">⚔️</div>
-      <h1 class="main-menu__title">BÚLAND</h1>
-      <div class="main-menu__vs">vs</div>
-      <h1 class="main-menu__title" style="color:var(--buland-secondary)">ÆLAND</h1>
-      <p class="main-menu__subtitle">Hver verður giftari?</p>
+    const el=document.createElement('div'); el.className='main-menu';
+    el.innerHTML=`
+      <div class="main-menu__golf">⛳</div>
+      <h1 class="main-menu__title main-menu__title--buland">BÚLAND</h1>
+      <div class="main-menu__vs">vs.</div>
+      <h1 class="main-menu__title main-menu__title--aeland">ÆLAND</h1>
+      <p class="main-menu__subtitle">Síðasta golf ferðin</p>
       <div style="height:1rem"></div>
-      <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Veldu lið til að byrja</p>
+      <p style="color:#64748B;font-size:0.85rem;font-family:'Fredoka',sans-serif;">Veldu lið til að byrja ↓</p>
       <div class="team-select">
-        <button class="team-btn team-btn--buland" data-team="buland">🏔️ Búland</button>
-        <button class="team-btn team-btn--aeland" data-team="aeland">☀️ Æland</button>
+        <button class="team-btn team-btn--buland" data-team="buland"><span class="team-btn__emoji">🏔️</span> Búland</button>
+        <button class="team-btn team-btn--aeland" data-team="aeland"><span class="team-btn__emoji">☀️</span> Æland</button>
       </div>
     `;
-    el.querySelectorAll('.team-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.team = btn.dataset.team;
-        goScene('charSelect', { team: btn.dataset.team });
-      });
+    el.querySelectorAll('.team-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{ state.team=btn.dataset.team; goScene('charSelect',{team:btn.dataset.team}); });
     });
     return el;
   }
@@ -427,99 +730,110 @@ registerScene('mainMenu', {
 // ===== CHARACTER SELECT =====
 registerScene('charSelect', {
   create() {
-    const el = document.createElement('div');
-    el.className = 'char-select';
-    el.innerHTML = `
-      <div class="char-select__header">
-        <div class="char-select__team-name"></div>
-        <div class="char-select__instruction">Veldu persónu</div>
-      </div>
+    const el=document.createElement('div'); el.className='char-select';
+    el.innerHTML=`
+      <div class="char-select__header"><div class="char-select__team-name"></div><div class="char-select__instruction">Veldu persónu — hver hefur sína styrkleika og veikleika</div></div>
       <div class="char-grid"></div>
       <button class="char-select__confirm">Velja</button>
       <button class="char-select__back">← Til baka</button>
     `;
-    el.querySelector('.char-select__back').addEventListener('click', () => goScene('mainMenu'));
-    el.querySelector('.char-select__confirm').addEventListener('click', () => {
-      if (!this._selectedId) return;
-      const char = CHARACTERS.find(c => c.id === this._selectedId);
-      if (!char || char.locked) return;
-      state.character = this._selectedId;
-      state.currentLocation = START_LOCATIONS[state.team];
-      state.currentMap = state.team;
-      const stats = { emotional:25, money:20, happiness:25, sex:15 };
-      char.strengths.forEach(s => stats[s] = Math.min(100, (stats[s]||0) + 15));
-      Object.entries(stats).forEach(([k,v]) => setStat(k,v));
+    el.querySelector('.char-select__back').addEventListener('click',()=>goScene('mainMenu'));
+    el.querySelector('.char-select__confirm').addEventListener('click',()=>{
+      if(!this._selectedId) return;
+      const char=CHARACTERS.find(c=>c.id===this._selectedId);
+      if(!char||char.locked) return;
+      state.character=this._selectedId;
+      state.currentLocation=START_LOCATIONS[state.team];
+      state.currentMap=state.team;
+      const stats={emotional:25,money:20,happiness:25,sex:15};
+      char.strengths.forEach(s=>stats[s]=Math.min(100,(stats[s]||0)+15));
+      Object.entries(stats).forEach(([k,v])=>setStat(k,v));
       saveGame();
-      goScene('mapView');
+      goScene('intro');
     });
     return el;
   },
-  _selectedId: null,
+  _selectedId:null,
   onEnter(data) {
-    this._selectedId = null;
-    const el = this.el;
-    const team = data?.team || state.team;
-    const td = TEAMS[team];
-    const cls = team === 'buland' ? 'buland' : 'aeland';
-    const nameEl = el.querySelector('.char-select__team-name');
-    nameEl.textContent = `${td.emoji} ${td.name}`;
-    nameEl.className = `char-select__team-name ${cls}`;
-    const confirmBtn = el.querySelector('.char-select__confirm');
-    confirmBtn.className = `char-select__confirm ${cls}-team`;
-    confirmBtn.classList.remove('ready');
-    const grid = el.querySelector('.char-grid');
-    grid.innerHTML = '';
-    CHARACTERS.filter(c => c.team === team).forEach(char => {
-      const card = document.createElement('div');
-      card.className = `char-card ${cls}-team`;
-      if (char.locked) card.style.opacity = '0.5';
-      const pips = STAT_KEYS.map(s =>
-        `<div class="char-stat-pip ${char.strengths.includes(s)?'strong':''}" style="background:${
-          s==='emotional'?'var(--stat-emotional)':s==='money'?'var(--stat-money)':s==='happiness'?'var(--stat-happiness)':'var(--stat-sex)'
-        }"></div>`
-      ).join('');
-      card.innerHTML = `
-        <div class="char-avatar" style="background:${char.bg}">${char.emoji}</div>
+    this._selectedId=null;
+    const el=this.el, team=data?.team||state.team, td=TEAMS[team];
+    const cls=team==='buland'?'buland':'aeland';
+    const nameEl=el.querySelector('.char-select__team-name');
+    nameEl.textContent=`${td.emoji} ${td.name}`; nameEl.className=`char-select__team-name ${cls}`;
+    const confirmBtn=el.querySelector('.char-select__confirm');
+    confirmBtn.className=`char-select__confirm ${cls}-team`; confirmBtn.classList.remove('ready');
+    const grid=el.querySelector('.char-grid'); grid.innerHTML='';
+    CHARACTERS.filter(c=>c.team===team).forEach(char=>{
+      const card=document.createElement('div'); card.className=`char-card ${cls}-team`;
+      if(char.locked) card.style.opacity='0.5';
+      const pips=STAT_KEYS.map(s=>{
+        const strong=char.strengths.includes(s);
+        const meta=STAT_META.find(m=>m.key===s);
+        return `<div class="char-stat-pip ${strong?'strong':''}" style="background:${meta.color}" title="${meta.label}"></div>`;
+      }).join('');
+      card.innerHTML=`
+        <div class="char-avatar" style="background:linear-gradient(135deg,${char.bg},${char.bg}cc)">${char.emoji}</div>
         <div class="char-info">
           <div class="char-info__name">${char.name}${char.locked?' 🔒':''}</div>
           <div class="char-info__role">${char.role}</div>
           <div class="char-info__ability">${char.ability}</div>
           <div class="char-info__stats">${pips}</div>
-        </div>
-      `;
-      if (!char.locked) {
-        card.addEventListener('click', () => {
-          this._selectedId = char.id;
-          grid.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
-          card.classList.add('selected');
-          confirmBtn.classList.add('ready');
-          confirmBtn.textContent = `Velja ${char.name}`;
-        });
-      }
+        </div>`;
+      if(!char.locked) card.addEventListener('click',()=>{
+        this._selectedId=char.id;
+        grid.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected'));
+        card.classList.add('selected');
+        confirmBtn.classList.add('ready'); confirmBtn.textContent=`Velja ${char.name}`;
+      });
       grid.appendChild(card);
     });
   }
 });
 
-// ===== MAP VIEW =====
-const mapState = { scale:1, x:0, y:0, isDragging:false, startX:0, startY:0, startTX:0, startTY:0, pinchDist:0, pinchScale:1, imgW:0, imgH:0 };
-let selectedLocation = null;
-
-registerScene('mapView', {
+// ===== INTRO / RULES =====
+registerScene('intro', {
   create() {
-    const el = document.createElement('div');
-    el.className = 'map-view';
-    el.innerHTML = `
+    const el=document.createElement('div'); el.className='ending-scene';
+    el.innerHTML=`
+      <div style="font-size:3rem">⛳</div>
+      <div class="ending-title" style="color:var(--aeland-primary)">Síðasta golf ferðin</div>
+      <div style="background:var(--bg-card);border-radius:var(--radius);padding:1rem 1.2rem;max-width:380px;width:100%;text-align:left;">
+        <div style="color:#E2E8F0;font-size:0.9rem;line-height:1.6;font-family:'Fredoka',sans-serif;">
+          <p style="margin-bottom:0.6rem;color:var(--aeland-primary);font-weight:600;font-size:1rem;text-align:center;">📋 Reglur leiksins</p>
+          <p style="margin-bottom:0.5rem;">🗺️ <b>Heimsóktu staði</b> — Ferðastu á milli staða í Búlandi og Ælandi. Hver staður hefur áskorun sem hækkar eða lækkar stats.</p>
+          <p style="margin-bottom:0.5rem;">🔒 <b>Einu sinni</b> — Þú getur aðeins heimsótt hvern stað einu sinni. Veldu skynsamlega!</p>
+          <p style="margin-bottom:0.5rem;">⭐ <b>Mini-games</b> — Sérstakir staðir (⭐) hafa mini-games: treyjusala í Fossvogi, endaveiðar á Marel, og golfæfingu.</p>
+          <p style="margin-bottom:0.5rem;">📊 <b>Skor</b> — Safnaðu sem hæstum stats í ❤️ Emotional, 💰 Money, 😊 Happiness og 🔥 Sex. Heildarskorið ræður úrslitum!</p>
+          <p style="margin-bottom:0.5rem;">🏆 <b>Manchester</b> — Ef heildarskor nær <b>300+</b> (af 400) komstu til Manchester á síðustu golfferðina!</p>
+          <p style="color:#64748B;font-size:0.8rem;">💡 Kepptu við vini — hver fær hæsta skorið?</p>
+        </div>
+      </div>
+      <button class="ev-btn" id="intro-go" style="width:100%;max-width:380px;padding:1rem;font-size:1.1rem;">🏌️ Byrja leikinn!</button>
+    `;
+    el.querySelector('#intro-go').addEventListener('click',()=>goScene('mapView'));
+    return el;
+  }
+});
+
+// ===== MAP VIEW =====
+registerScene('mapView', {
+  _activeTab:null,
+  create() {
+    const el=document.createElement('div'); el.className='map-view';
+    el.innerHTML=`
       <div class="hud">
         <div class="hud__top">
           <div class="hud__character">
             <div class="hud__avatar"></div>
             <div><div class="hud__name"></div><div class="hud__team"></div></div>
           </div>
-          <div class="hud__day">Dagur 1</div>
-          <button class="hud__toggle">▼</button>
+          <div class="hud__info">
+            <div class="hud__ap" title="Heildar skor">🏆 0</div>
+            <div class="hud__week" title="Staðir eftir">🗺️ 23</div>
+            <button class="hud__toggle">▼</button>
+          </div>
         </div>
-        <div class="hud__stats">${STAT_META.map(s => `
+        <div class="hud__stats">${STAT_META.map(s=>`
           <div class="stat-bar" data-stat="${s.key}">
             <span class="stat-bar__icon">${s.icon}</span>
             <div class="stat-bar__track"><div class="stat-bar__fill" style="background:${s.color};width:0%"></div></div>
@@ -527,297 +841,694 @@ registerScene('mapView', {
           </div>`).join('')}
         </div>
       </div>
-      <div class="map-container">
-        <div class="map-image"><img src="" alt="map" /></div>
-        <div class="player-marker"><div class="player-marker__dot"></div></div>
-      </div>
-      <button class="map-switch">🗺️ Skipta korti</button>
-      <div class="location-panel">
-        <div class="location-panel__handle"></div>
-        <div class="location-panel__name"></div>
-        <div class="location-panel__desc"></div>
-        <div class="location-panel__actions">
-          <button class="location-panel__btn location-panel__btn--cancel">Loka</button>
-          <button class="location-panel__btn location-panel__btn--travel">🚶 Ferðast</button>
+      <div class="loc-list-wrap">
+        <div style="background:var(--bg-card);border-radius:10px;padding:8px 12px;margin-bottom:0.5rem;font-size:0.72rem;color:#64748B;line-height:1.4;">
+          💡 <b style="color:#94A3B8">Smelltu á stað</b> til að ferðast. Hver staður er einu sinni. ⭐ = mini-game. Ýttu á <b style="color:var(--aeland-primary)">Klára leik</b> þegar þú ert tilbúin/n.
         </div>
+        <div class="loc-list-tabs">
+          <button class="loc-list-tab" data-map="buland">${TEAMS.buland.emoji} Búland</button>
+          <button class="loc-list-tab" data-map="aeland">${TEAMS.aeland.emoji} Æland</button>
+        </div>
+        <div class="loc-list"></div>
+        <button class="ev-btn" id="finish-btn" style="width:100%;margin-top:0.7rem;font-size:1rem;">🏆 Klára leik — sjá úrslit</button>
       </div>
       <div class="travel-overlay">
         <div class="travel-overlay__text">Ferðast...</div>
         <div class="travel-overlay__dots"><span></span><span></span><span></span></div>
       </div>
     `;
-    // HUD toggle
-    const hud = el.querySelector('.hud');
-    const toggleBtn = el.querySelector('.hud__toggle');
-    toggleBtn.addEventListener('click', () => {
+    const hud=el.querySelector('.hud'), toggleBtn=el.querySelector('.hud__toggle');
+    toggleBtn.addEventListener('click',()=>{
       hud.classList.toggle('collapsed');
-      toggleBtn.textContent = hud.classList.contains('collapsed') ? '▲' : '▼';
+      toggleBtn.textContent=hud.classList.contains('collapsed')?'▲':'▼';
     });
-    // Map interaction
-    const container = el.querySelector('.map-container');
-    const mapEl = el.querySelector('.map-image');
-    container.addEventListener('touchstart', e => {
-      if (e.touches.length === 1) {
-        mapState.isDragging = true;
-        mapState.startX = e.touches[0].clientX; mapState.startY = e.touches[0].clientY;
-        mapState.startTX = mapState.x; mapState.startTY = mapState.y;
-      } else if (e.touches.length === 2) {
-        mapState.isDragging = false;
-        mapState.pinchDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
-        mapState.pinchScale = mapState.scale;
-      }
-    }, {passive:true});
-    container.addEventListener('touchmove', e => {
-      if (e.touches.length === 1 && mapState.isDragging) {
-        mapState.x = mapState.startTX + (e.touches[0].clientX - mapState.startX);
-        mapState.y = mapState.startTY + (e.touches[0].clientY - mapState.startY);
-        clampMap(container); applyTransform(mapEl);
-      } else if (e.touches.length === 2) {
-        const d = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
-        mapState.scale = Math.max(0.5, Math.min(3, mapState.pinchScale * (d / mapState.pinchDist)));
-        clampMap(container); applyTransform(mapEl);
-      }
-    }, {passive:true});
-    container.addEventListener('touchend', () => { mapState.isDragging = false; }, {passive:true});
-    // Mouse drag
-    let md = false;
-    container.addEventListener('mousedown', e => {
-      md = true; mapState.startX = e.clientX; mapState.startY = e.clientY;
-      mapState.startTX = mapState.x; mapState.startTY = mapState.y;
-      container.style.cursor = 'grabbing';
+    el.querySelectorAll('.loc-list-tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{ this._activeTab=tab.dataset.map; state.currentMap=tab.dataset.map; this._renderList(el); });
     });
-    window.addEventListener('mousemove', e => {
-      if (!md) return;
-      mapState.x = mapState.startTX + (e.clientX - mapState.startX);
-      mapState.y = mapState.startTY + (e.clientY - mapState.startY);
-      clampMap(container); applyTransform(mapEl);
+    el.querySelector('#finish-btn').addEventListener('click',()=>{
+      const score=getTotalScore();
+      goScene('ending',{type:score>=300?'epic':score>=200?'skilnadur':'utlagi'});
     });
-    window.addEventListener('mouseup', () => { md = false; container.style.cursor = ''; });
-    container.addEventListener('wheel', e => {
-      e.preventDefault();
-      mapState.scale = Math.max(0.5, Math.min(3, mapState.scale * (e.deltaY > 0 ? 0.9 : 1.1)));
-      clampMap(container); applyTransform(mapEl);
-    }, {passive:false});
-    // Map switch
-    el.querySelector('.map-switch').addEventListener('click', () => {
-      const next = state.currentMap === 'buland' ? 'aeland' : 'buland';
-      state.currentMap = next;
-      loadMap(el, next);
-    });
-    // Location panel
-    const panel = el.querySelector('.location-panel');
-    panel.querySelector('.location-panel__btn--cancel').addEventListener('click', () => {
-      panel.classList.remove('open'); selectedLocation = null;
-    });
-    panel.querySelector('.location-panel__btn--travel').addEventListener('click', () => {
-      if (!selectedLocation) return;
-      panel.classList.remove('open');
-      travelTo(el, selectedLocation);
-    });
-    let sy = 0;
-    panel.addEventListener('touchstart', e => { sy = e.touches[0].clientY; }, {passive:true});
-    panel.addEventListener('touchmove', e => {
-      if (e.touches[0].clientY - sy > 50) { panel.classList.remove('open'); selectedLocation = null; }
-    }, {passive:true});
     return el;
   },
   onEnter() {
-    const el = this.el;
-    updateHUD(el);
-    on('stats', () => updateHUD(el));
-    // Delay loadMap so the scene is fully visible and has dimensions
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        loadMap(el, state.currentMap || state.team);
-      }, 100);
+    const el=this.el;
+    this._activeTab=state.currentMap||state.team;
+    updateHUD(el); on('stats',()=>updateHUD(el));
+    this._renderList(el);
+    // Auto-end if all locations visited
+    if(getLocationsLeft()<=0) {
+      setTimeout(()=>{
+        const score=getTotalScore();
+        goScene('ending',{type:score>=300?'epic':score>=200?'skilnadur':'utlagi'});
+      },500);
+    }
+  },
+  _renderList(el) {
+    const mapId=this._activeTab;
+    el.querySelectorAll('.loc-list-tab').forEach(t=>t.classList.toggle('active',t.dataset.map===mapId));
+    const list=el.querySelector('.loc-list');
+    const locs=Object.values(LOCATIONS).filter(l=>l.map===mapId);
+    list.innerHTML=locs.map(loc=>{
+      const visited=state.visitedLocations.includes(loc.id);
+      const isHere=loc.id===state.currentLocation;
+      const boostText=loc.boost?Object.entries(loc.boost).map(([k,v])=>`${STAT_ICONS[k]}+${v}`).join(' '):'';
+      return `
+        <div class="loc-row ${isHere?'current':''} ${loc.special&&!visited?'special':''} ${visited?'visited':''}" data-loc="${loc.id}" style="${visited?'opacity:0.45;pointer-events:none;':''}">
+          <div class="loc-row__icon" style="background:${loc.color}22">${visited?'✅':loc.icon}</div>
+          <div class="loc-row__info">
+            <div class="loc-row__name">${loc.name}${loc.special&&!visited?' ⭐':''}${visited?' — klárað':''}</div>
+            <div class="loc-row__boost">${visited?'':boostText}</div>
+          </div>
+          ${visited?'':'<div class="loc-row__arrow">›</div>'}
+        </div>`;
+    }).join('');
+    list.querySelectorAll('.loc-row:not(.visited)').forEach(row=>{
+      row.addEventListener('click',()=>{
+        const locId=row.dataset.loc;
+        travelTo(el,locId);
+      });
     });
   }
 });
 
-function clampMap(container) {
-  const cw = container.clientWidth, ch = container.clientHeight;
-  const mw = mapState.imgW * mapState.scale, mh = mapState.imgH * mapState.scale;
-  // If map is smaller than container, center it; otherwise allow panning within bounds
-  if (mw <= cw) { mapState.x = (cw - mw) / 2; }
-  else { mapState.x = Math.min(0, Math.max(cw - mw, mapState.x)); }
-  if (mh <= ch) { mapState.y = (ch - mh) / 2; }
-  else { mapState.y = Math.min(0, Math.max(ch - mh, mapState.y)); }
-}
-function applyTransform(mapEl) {
-  mapEl.style.transform = `translate(${mapState.x}px,${mapState.y}px) scale(${mapState.scale})`;
-}
-
-function loadMap(el, mapId) {
-  const img = el.querySelector('.map-image img');
-  const mapEl = el.querySelector('.map-image');
-  const container = el.querySelector('.map-container');
-
-  function setupMap(w, h) {
-    mapState.imgW = w; mapState.imgH = h;
-    mapEl.style.width = w + 'px';
-    mapEl.style.height = h + 'px';
-    const cw = container.clientWidth, ch = container.clientHeight;
-    // Fill the screen — cover the container fully
-    mapState.scale = Math.max(ch / h, cw / w);
-    // Center the map
-    mapState.x = (cw - w * mapState.scale) / 2;
-    mapState.y = (ch - h * mapState.scale) / 2;
-    clampMap(container); applyTransform(mapEl);
-    renderPins(el, mapId); updatePlayer(el);
-  }
-
-  img.onload = () => { setupMap(img.naturalWidth, img.naturalHeight); };
-  img.onerror = () => {
-    // Fallback: styled map background sized for mobile
-    img.style.display = 'none';
-    const mapBg = mapId === 'buland'
-      ? 'radial-gradient(ellipse at 40% 30%, #2a5a3a 0%, #1B3A5C 40%, #0d2137 100%)'
-      : 'radial-gradient(ellipse at 50% 40%, #f0c050 0%, #D4A843 30%, #E8732A 70%, #a04018 100%)';
-    mapEl.style.background = mapBg;
-    mapEl.style.boxShadow = 'inset 0 0 60px rgba(0,0,0,0.3)';
-    setupMap(600, 500);
-  };
-  img.style.display = 'block';
-  img.src = mapId === 'buland' ? 'assets/maps/buland-map.jpeg' : 'assets/maps/aeland-map.jpeg';
-  const other = mapId === 'buland' ? 'aeland' : 'buland';
-  el.querySelector('.map-switch').textContent = `🗺️ ${TEAMS[other].name}`;
-}
-
-function renderPins(el, mapId) {
-  el.querySelectorAll('.location-pin').forEach(p => p.remove());
-  const mapEl = el.querySelector('.map-image');
-  Object.values(LOCATIONS).filter(l => l.map === mapId).forEach(loc => {
-    const pin = document.createElement('div');
-    pin.className = `location-pin ${loc.id === state.currentLocation ? 'current' : ''}`;
-    pin.style.left = `${loc.x}%`; pin.style.top = `${loc.y}%`;
-    pin.innerHTML = `
-      <div class="location-pin__icon">
-        <div class="location-pin__marker" style="background:${loc.color}"><span>${loc.icon}</span></div>
-      </div>
-      <div class="location-pin__label">${loc.name}</div>
-    `;
-    pin.addEventListener('click', e => { e.stopPropagation(); openPanel(el, loc); });
-    mapEl.appendChild(pin);
-  });
-}
-
-function openPanel(el, loc) {
-  selectedLocation = loc.id;
-  const panel = el.querySelector('.location-panel');
-  const isHere = loc.id === state.currentLocation;
-  panel.querySelector('.location-panel__name').textContent = `${loc.icon} ${loc.name}${loc.special?' ⭐':''}`;
-  panel.querySelector('.location-panel__desc').textContent = loc.desc;
-  const tBtn = panel.querySelector('.location-panel__btn--travel');
-  if (isHere) {
-    tBtn.textContent = '📍 Hér ertu'; tBtn.style.opacity = '0.5'; tBtn.style.pointerEvents = 'none';
-  } else {
-    tBtn.textContent = '🚶 Ferðast'; tBtn.style.opacity = '1'; tBtn.style.pointerEvents = 'all';
-    const tc = state.team === 'buland'
-      ? 'linear-gradient(135deg,var(--buland-primary),var(--buland-secondary))'
-      : 'linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary))';
-    tBtn.style.background = tc;
-  }
-  panel.classList.add('open');
-}
-
-function travelTo(el, locId) {
-  const loc = LOCATIONS[locId]; if (!loc) return;
-  const overlay = el.querySelector('.travel-overlay');
-  overlay.querySelector('.travel-overlay__text').textContent = `Ferðast til ${loc.name}...`;
+function travelTo(el,locId) {
+  const loc=LOCATIONS[locId]; if(!loc) return;
+  if(state.visitedLocations.includes(locId)) return; // Already visited
+  const overlay=el.querySelector('.travel-overlay');
+  overlay.querySelector('.travel-overlay__text').textContent=`Ferðast til ${loc.name}...`;
   overlay.classList.add('active');
-  setTimeout(() => {
-    state.currentLocation = locId;
-    if (loc.map !== state.currentMap) { state.currentMap = loc.map; loadMap(el, loc.map); }
-    else { renderPins(el, loc.map); }
-    updatePlayer(el);
-    // Calculate and apply stat boosts
-    const gains = {};
-    if (loc.boost) {
-      Object.entries(loc.boost).forEach(([k,v]) => {
-        const amt = Math.floor(v*(0.5+Math.random()*0.5));
-        gains[k] = amt;
-        addStat(k, amt);
-      });
-    }
-    if (!state.visitedLocations.includes(locId)) state.visitedLocations.push(locId);
-    updateHUD(el);
+  setTimeout(()=>{
+    state.currentLocation=locId;
+    state.currentMap=loc.map;
+    if(!state.visitedLocations.includes(locId)) state.visitedLocations.push(locId);
     saveGame();
-    // Show arrival screen with stat gains
-    showArrival(el, loc, gains);
-  }, 1200);
-}
-
-function showArrival(el, loc, gains) {
-  const overlay = el.querySelector('.travel-overlay');
-  const STAT_ICONS = {emotional:'❤️',money:'💰',happiness:'😊',sex:'🔥'};
-  const STAT_COLORS = {emotional:'var(--stat-emotional)',money:'var(--stat-money)',happiness:'var(--stat-happiness)',sex:'var(--stat-sex)'};
-  const gainHtml = Object.entries(gains).map(([k,v]) =>
-    `<span style="display:inline-block;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.1);margin:3px;font-size:0.9rem;">${STAT_ICONS[k]} +${v}%</span>`
-  ).join('');
-  overlay.innerHTML = `
-    <div style="font-size:2rem;">${loc.icon}</div>
-    <div class="travel-overlay__text">${loc.name}</div>
-    <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;max-width:280px;text-align:center;">${loc.desc}</div>
-    <div style="margin-top:0.5rem;">${gainHtml || '<span style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Enginn stat boost</span>'}</div>
-    <button onclick="this.closest('.travel-overlay').classList.remove('active')" style="
-      margin-top:1rem;padding:0.7rem 2rem;border:none;border-radius:10px;
-      background:linear-gradient(135deg,var(--aeland-primary),var(--aeland-secondary));
-      color:white;font-family:'MedievalSharp',cursive;font-size:1rem;cursor:pointer;
-    ">Halda áfram</button>
-  `;
-  // Restore overlay template after close
-  const restore = () => {
-    if (!overlay.classList.contains('active')) {
-      overlay.innerHTML = `
-        <div class="travel-overlay__text">Ferðast...</div>
-        <div class="travel-overlay__dots"><span></span><span></span><span></span></div>
-      `;
-      overlay.removeEventListener('transitionend', restore);
-    }
-  };
-  overlay.addEventListener('transitionend', restore);
-}
-
-function updatePlayer(el) {
-  const loc = LOCATIONS[state.currentLocation];
-  const marker = el.querySelector('.player-marker');
-  if (!loc || loc.map !== state.currentMap) { marker.style.display = 'none'; return; }
-  marker.style.display = 'block'; marker.style.left = `${loc.x}%`; marker.style.top = `${loc.y}%`;
-  marker.querySelector('.player-marker__dot').style.background = TEAMS[state.team].colors.primary;
-  const mapImage = el.querySelector('.map-image');
-  if (marker.parentElement !== mapImage) mapImage.appendChild(marker);
+    overlay.classList.remove('active');
+    // Route to appropriate scene
+    if(locId==='fossvogur') { goScene('fossvogur'); return; }
+    if(locId==='marel-factory') { goScene('marelFactory'); return; }
+    if(locId==='golf-hermir'||locId==='hraunid'||locId==='lokadur-golf') { goScene('golfGame',{locId}); return; }
+    // Check for location event
+    const ev=getLocationEvent(locId);
+    if(ev) { goScene('locationEvent',{locId,event:ev}); return; }
+    // Default: just apply boosts and stay on map
+    const gains={};
+    if(loc.boost) Object.entries(loc.boost).forEach(([k,v])=>{ const amt=Math.floor(v*(0.5+Math.random()*0.5)); gains[k]=amt; addStat(k,amt); });
+    updateHUD(el);
+    if(scenes.mapView._renderList) scenes.mapView._renderList(el);
+    saveGame();
+  },1000);
 }
 
 function updateHUD(el) {
-  const char = CHARACTERS.find(c => c.id === state.character);
-  const td = TEAMS[state.team];
-  if (char) {
-    el.querySelector('.hud__avatar').textContent = char.emoji;
-    el.querySelector('.hud__avatar').style.background = char.bg;
-    el.querySelector('.hud__name').textContent = char.name;
-    el.querySelector('.hud__team').textContent = td.name;
+  const char=CHARACTERS.find(c=>c.id===state.character);
+  const td=TEAMS[state.team];
+  if(char) {
+    el.querySelector('.hud__avatar').textContent=char.emoji;
+    el.querySelector('.hud__avatar').style.background=char.bg;
+    el.querySelector('.hud__name').textContent=char.name;
+    el.querySelector('.hud__team').textContent=td.name;
   }
-  el.querySelector('.hud__day').textContent = `Dagur ${state.day}`;
-  STAT_META.forEach(s => {
-    const bar = el.querySelector(`.stat-bar[data-stat="${s.key}"]`);
-    if (!bar) return;
-    const v = state.stats[s.key] || 0;
-    bar.querySelector('.stat-bar__fill').style.width = `${v}%`;
-    bar.querySelector('.stat-bar__value').textContent = `${v}%`;
+  const scoreEl=el.querySelector('.hud__ap');
+  if(scoreEl) scoreEl.textContent=`🏆 ${getTotalScore()}`;
+  const leftEl=el.querySelector('.hud__week');
+  if(leftEl) leftEl.textContent=`🗺️ ${getLocationsLeft()} eftir`;
+  STAT_META.forEach(s=>{
+    const bar=el.querySelector(`.stat-bar[data-stat="${s.key}"]`); if(!bar) return;
+    const v=state.stats[s.key]||0;
+    bar.querySelector('.stat-bar__fill').style.width=`${v}%`;
+    bar.querySelector('.stat-bar__value').textContent=`${v}%`;
   });
 }
 
+// ===== LOCATION EVENT SCENE =====
+registerScene('locationEvent', {
+  create() {
+    const el=document.createElement('div'); el.className='event-scene';
+    el.innerHTML=`<button class="ev-back">← Kort</button><div class="ev-icon"></div><div class="ev-title"></div><div class="ev-sub"></div><div class="ev-card"><div class="ev-text"></div></div><div style="font-size:0.7rem;color:#475569;text-align:center;max-width:350px;">👆 Veldu aðgerð — hvert val hefur mismunandi áhrif á stats</div><div class="ev-choices"></div><div class="ev-result" style="display:none"></div>`;
+    el.querySelector('.ev-back').addEventListener('click',()=>goScene('mapView'));
+    return el;
+  },
+  onEnter(data) {
+    const el=this.el, loc=LOCATIONS[data.locId], ev=data.event;
+    el.querySelector('.ev-icon').textContent=loc.icon;
+    el.querySelector('.ev-title').textContent=loc.name;
+    el.querySelector('.ev-sub').textContent=`🏆 Skor: ${getTotalScore()} / 400`;
+    el.querySelector('.ev-text').textContent=ev.text;
+    el.querySelector('.ev-card').style.display='';
+    el.querySelector('.ev-result').style.display='none';
+    const choicesEl=el.querySelector('.ev-choices');
+    choicesEl.innerHTML=ev.choices.map((c,i)=>`<button class="ev-choice" data-idx="${i}">${c.text}</button>`).join('');
+    choicesEl.querySelectorAll('.ev-choice').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const choice=ev.choices[parseInt(btn.dataset.idx)];
+        const gains=choice.outcome;
+        applyGains(gains);
+        saveGame();
+        el.querySelector('.ev-card').style.display='none';
+        choicesEl.innerHTML='';
+        const resultEl=el.querySelector('.ev-result');
+        resultEl.style.display='';
+        const isPositive=Object.values(gains).reduce((a,b)=>a+b,0)>0;
+        resultEl.innerHTML=`
+          <div class="ev-result-icon">${isPositive?'🎉':'😔'}</div>
+          <div class="ev-result-title ${isPositive?'success':'fail'}">${isPositive?'Vel gert!':'Þetta gekk ekki...'}</div>
+          <div class="ev-result-text">${choice.resultText}</div>
+          <div class="ev-gains">${gainsHtml(gains)}</div>
+          <button class="ev-btn">← Aftur á kort</button>
+        `;
+        resultEl.querySelector('.ev-btn').addEventListener('click',()=>goScene('mapView'));
+      });
+    });
+  }
+});
+
+// ===== FOSSVOGUR SCENE =====
+registerScene('fossvogur', {
+  _phase:'jersey', _jerseyTeam:null, _npc:null, _dialogueStep:0, _totalScore:0, _dialogueData:null,
+  create() {
+    const el=document.createElement('div'); el.className='event-scene';
+    el.innerHTML=`
+      <button class="ev-back">← Kort</button>
+      <div class="ev-icon">🏠</div>
+      <div class="ev-title" style="color:var(--aeland-primary)">Fossvogur</div>
+      <div class="ev-sub">Side Hustle — Treyjusala</div>
+      <div style="display:flex;gap:0.6rem;justify-content:center;padding:0.4rem 0.8rem;background:var(--bg-card);border-radius:10px;width:100%;max-width:400px;">
+        <span style="font-size:0.75rem;color:#94A3B8">👕 Seldar: <b class="foss-sold" style="color:var(--aeland-primary)">0</b></span>
+        <span style="font-size:0.75rem;color:#94A3B8">📊 Stig: <b class="foss-lvl" style="color:var(--aeland-primary)">1</b></span>
+      </div>
+      <div class="foss-content" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0.5rem;flex:1;max-width:400px;"></div>
+    `;
+    el.querySelector('.ev-back').addEventListener('click',()=>{saveGame();goScene('mapView');});
+    return el;
+  },
+  onEnter() {
+    state.fossvogur.visits++;
+    this._phase='jersey'; this._jerseyTeam=null; this._totalScore=0; this._dialogueStep=0;
+    this._updateStats(); this._showJerseySelect();
+  },
+  _updateStats() {
+    const el=this.el;
+    el.querySelector('.foss-sold').textContent=state.fossvogur.jerseysSold;
+    state.fossvogur.level=state.fossvogur.jerseysSold>=50?2:1;
+    el.querySelector('.foss-lvl').textContent=state.fossvogur.level;
+  },
+  _showJerseySelect() {
+    const content=this.el.querySelector('.foss-content');
+    const own=state.team, other=own==='buland'?'aeland':'buland';
+    content.innerHTML=`
+      <div style="text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;color:#E2E8F0;margin-top:0.5rem;">Veldu treyju til að selja</div>
+      <div style="font-size:0.7rem;color:#475569;text-align:center;max-width:320px;">Eigið lið er öruggara. Að selja andstæðingsins treyju gefur meiri áhættu — og ef þú selur of margar = landráð! ⚠️</div>
+      <div style="display:flex;gap:0.75rem;justify-content:center;">
+        <div class="foss-j" data-team="${own}" style="flex:1;min-width:130px;max-width:170px;padding:1.2rem 0.6rem;border-radius:var(--radius);border:3px solid transparent;cursor:pointer;text-align:center;background:linear-gradient(135deg,${own==='buland'?'#2563EB,#10B981':'#F59E0B,#EF4444'});">
+          <div style="font-size:2.2rem">👕</div>
+          <div style="color:white;font-size:0.85rem;margin-top:0.3rem;font-weight:600">${TEAMS[own].emoji} ${TEAMS[own].name}</div>
+          <div style="color:rgba(255,255,255,0.6);font-size:0.7rem">Öruggt — eigið lið</div>
+        </div>
+        <div class="foss-j" data-team="${other}" style="flex:1;min-width:130px;max-width:170px;padding:1.2rem 0.6rem;border-radius:var(--radius);border:3px solid transparent;cursor:pointer;text-align:center;background:linear-gradient(135deg,${other==='buland'?'#2563EB,#10B981':'#F59E0B,#EF4444'});">
+          <div style="font-size:2.2rem">👕</div>
+          <div style="color:white;font-size:0.85rem;margin-top:0.3rem;font-weight:600">${TEAMS[other].emoji} ${TEAMS[other].name}</div>
+          <div style="color:rgba(255,255,255,0.6);font-size:0.7rem">⚠️ Áhætta — landráð!</div>
+        </div>
+      </div>
+      <button class="ev-btn secondary" style="pointer-events:none;opacity:0.3" id="foss-go">Velja</button>
+    `;
+    const cards=content.querySelectorAll('.foss-j'), goBtn=content.querySelector('#foss-go');
+    cards.forEach(c=>c.addEventListener('click',()=>{
+      cards.forEach(x=>x.style.borderColor='transparent');
+      c.style.borderColor='#fff'; this._jerseyTeam=c.dataset.team;
+      goBtn.style.opacity='1'; goBtn.style.pointerEvents='all';
+      goBtn.textContent=`Selja ${TEAMS[this._jerseyTeam].name} treyjur`;
+      goBtn.className='ev-btn';
+    }));
+    goBtn.addEventListener('click',()=>{ if(this._jerseyTeam) this._showDoor(); });
+  },
+  _showDoor() {
+    const content=this.el.querySelector('.foss-content');
+    content.innerHTML=`
+      <div style="font-size:5rem;margin:1rem 0;animation:door-idle 2s ease-in-out infinite">🚪</div>
+      <div style="color:#94A3B8;font-size:0.9rem;text-align:center;margin-bottom:0.6rem">Þú gengur eftir götu í Fossvogi...<br>Rólegt hverfi, falleg hús, blómapottar.</div>
+      <button class="ev-btn" id="knock-btn">🤜 Banka á dyr</button>
+    `;
+    content.querySelector('#knock-btn').addEventListener('click',()=>{
+      let pool=HUSMAEDUR.filter(h=>!h.vip);
+      if(state.fossvogur.level>=2) pool=[...HUSMAEDUR];
+      this._npc=pool[Math.floor(Math.random()*pool.length)];
+      this._dialogueStep=0; this._totalScore=0;
+      this._dialogueData=getFossDialogue(this._npc,this._jerseyTeam,state.team);
+      setTimeout(()=>this._showDialogue(),500);
+    });
+  },
+  _showDialogue() {
+    const content=this.el.querySelector('.foss-content'), npc=this._npc, step=this._dialogueData[this._dialogueStep];
+    content.innerHTML=`
+      <div style="display:flex;gap:0.8rem;align-items:center;padding:0.8rem;background:var(--bg-card);border-radius:var(--radius);width:100%;">
+        <div style="width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;background:${npc.bg}">${npc.emoji}</div>
+        <div><div style="color:var(--aeland-primary);font-family:'Fredoka',sans-serif;font-weight:600">${npc.name}${npc.vip?' ⭐':''}</div><div style="color:#64748B;font-size:0.72rem">${npc.personality}</div></div>
+      </div>
+      <div style="background:var(--bg-card);border-radius:var(--radius);padding:0.8rem;color:#E2E8F0;font-size:0.88rem;line-height:1.45;border-left:3px solid var(--aeland-primary);width:100%">${step.npcText}</div>
+      <div class="ev-choices" style="width:100%">${step.choices.map((c,i)=>`<button class="ev-choice" data-idx="${i}">${c.text}</button>`).join('')}</div>
+    `;
+    content.querySelectorAll('.ev-choice').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        this._totalScore+=step.choices[parseInt(btn.dataset.idx)].score;
+        this._dialogueStep++;
+        if(this._dialogueStep<this._dialogueData.length) this._showDialogue();
+        else this._showResult();
+      });
+    });
+  },
+  _showResult() {
+    const content=this.el.querySelector('.foss-content'), npc=this._npc;
+    const ratio=this._totalScore/6, success=ratio>npc.difficulty;
+    const vipBonus=npc.vip?1.5:1, ownTeam=this._jerseyTeam===state.team;
+    const gains={};
+    let resultText='', resultIcon='';
+    if(success) {
+      gains.sex=Math.round((8+Math.random()*7)*vipBonus);
+      gains.emotional=Math.round((5+Math.random()*5)*vipBonus);
+      if(Math.random()>0.4) gains.money=Math.round((4+Math.random()*6)*vipBonus);
+      state.fossvogur.jerseysSold++;
+      if(ownTeam) state.fossvogur.ownTeamSold++; else state.fossvogur.otherTeamSold++;
+      resultIcon='🎉';
+      const texts=[`${npc.name} keypti treyjuna og bauð þér í kaffi!`,`${npc.name} sagði „Ég tek tvær!"`,`${npc.name} var svo hrifin!`,`${npc.name} keypti og þú fékkst bónus.`];
+      resultText=texts[Math.floor(Math.random()*texts.length)];
+      applyGains(gains);
+    } else {
+      if(Math.random()>0.5) { gains.happiness=-Math.round(2+Math.random()*3); addStat('happiness',gains.happiness); }
+      resultIcon='😔';
+      const texts=[`${npc.name} lokaði dyrunum.`,`${npc.name} hringdi í manninn sinn.`,`Hundurinn hjá ${npc.name} geltaði.`];
+      resultText=texts[Math.floor(Math.random()*texts.length)];
+    }
+    let landradWarn='';
+    if(!ownTeam&&success) {
+      state.fossvogur.landrad++;
+      if(state.fossvogur.landrad>=3) landradWarn=`⚠️ LANDRÁÐ! ${state.fossvogur.landrad} treyjur seldar fyrir andstæðinginn!`;
+    }
+    saveGame(); this._updateStats();
+    content.innerHTML=`
+      <div style="text-align:center">
+        <div style="font-size:3rem">${resultIcon}</div>
+        <div class="ev-result-title ${success?'success':'fail'}">${success?'Sala tókst!':'Sala mistókst'}</div>
+        <div class="ev-result-text">${resultText}</div>
+        <div class="ev-gains">${gainsHtml(gains)}</div>
+        ${landradWarn?`<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:12px;padding:0.6rem;color:#FCA5A5;font-size:0.8rem;margin-bottom:0.6rem">${landradWarn}</div>`:''}
+        <button class="ev-btn" id="foss-again">🚪 Banka aftur</button><br>
+        <button class="ev-btn secondary" id="foss-back" style="margin-top:0.3rem">← Aftur á kort</button>
+      </div>
+    `;
+    content.querySelector('#foss-again').addEventListener('click',()=>this._showJerseySelect());
+    content.querySelector('#foss-back').addEventListener('click',()=>{saveGame();goScene('mapView');});
+  }
+});
+
+// ===== MAREL FACTORY MINI-GAME =====
+registerScene('marelFactory', {
+  _timer:null, _ducks:[], _score:0, _timeLeft:0,
+  create() {
+    const el=document.createElement('div'); el.className='event-scene';
+    el.innerHTML=`
+      <button class="ev-back">← Kort</button>
+      <div class="ev-icon">🏭</div>
+      <div class="ev-title">Marel Factory</div>
+      <div class="ev-sub">Duck Wrangler — Náðu í endurnar!</div>
+      <div style="font-size:0.72rem;color:#475569;text-align:center;max-width:320px;line-height:1.4;">🦆 Smelltu á endurnar til að veiða þær! Þú hefur 30 sekúndur. Fleiri endur = meiri peningar. Dabbi fær bónus!</div>
+      <div style="display:flex;gap:1rem;justify-content:center;align-items:center;">
+        <div class="marel-timer">30</div>
+        <div class="marel-score">🦆 0</div>
+      </div>
+      <div class="marel-field"><div class="marel-machine">🏭</div></div>
+      <div class="ev-result" style="display:none"></div>
+      <button class="ev-btn" id="marel-start">🦆 Byrja!</button>
+    `;
+    el.querySelector('.ev-back').addEventListener('click',()=>{this._stop();goScene('mapView');});
+    el.querySelector('#marel-start').addEventListener('click',()=>this._startGame());
+    return el;
+  },
+  onEnter() {
+    this._score=0; this._timeLeft=30; this._ducks=[];
+    const el=this.el;
+    el.querySelector('.marel-timer').textContent='30';
+    el.querySelector('.marel-score').textContent='🦆 0';
+    el.querySelector('#marel-start').style.display='';
+    el.querySelector('.ev-result').style.display='none';
+    el.querySelector('.marel-field').querySelectorAll('.marel-duck').forEach(d=>d.remove());
+  },
+  _startGame() {
+    const el=this.el;
+    el.querySelector('#marel-start').style.display='none';
+    this._score=0; this._timeLeft=30;
+    const field=el.querySelector('.marel-field');
+    const timerEl=el.querySelector('.marel-timer');
+    const scoreEl=el.querySelector('.marel-score');
+    // Spawn ducks periodically
+    const spawnDuck=()=>{
+      if(this._timeLeft<=0) return;
+      const duck=document.createElement('div');
+      duck.className='marel-duck'; duck.textContent='🦆';
+      duck.style.left=Math.random()*85+'%';
+      duck.style.top=Math.random()*70+'%';
+      field.appendChild(duck);
+      // Move duck randomly
+      const moveInterval=setInterval(()=>{
+        if(!duck.parentNode) { clearInterval(moveInterval); return; }
+        duck.style.left=Math.max(0,Math.min(85,parseFloat(duck.style.left)+(Math.random()-0.5)*20))+'%';
+        duck.style.top=Math.max(0,Math.min(70,parseFloat(duck.style.top)+(Math.random()-0.5)*15))+'%';
+      },600);
+      duck.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        this._score++;
+        scoreEl.textContent=`🦆 ${this._score}`;
+        duck.textContent='✅'; duck.style.animation='none'; duck.style.fontSize='1.5rem';
+        setTimeout(()=>duck.remove(),300);
+        clearInterval(moveInterval);
+      });
+      // Duck escapes after a while
+      setTimeout(()=>{ if(duck.parentNode&&duck.textContent==='🦆') { duck.remove(); clearInterval(moveInterval); } },4000);
+    };
+    const spawnInterval=setInterval(()=>{
+      if(this._timeLeft<=0) { clearInterval(spawnInterval); return; }
+      spawnDuck(); if(Math.random()>0.5) spawnDuck(); // sometimes 2 at once
+    },1200);
+    spawnDuck(); spawnDuck(); // Initial ducks
+    // Timer
+    this._timer=setInterval(()=>{
+      this._timeLeft--;
+      timerEl.textContent=this._timeLeft;
+      if(this._timeLeft<=0) { this._stop(); this._showResult(); }
+    },1000);
+  },
+  _stop() { if(this._timer) { clearInterval(this._timer); this._timer=null; } },
+  _showResult() {
+    const el=this.el, score=this._score;
+    el.querySelector('.marel-field').querySelectorAll('.marel-duck').forEach(d=>d.remove());
+    state.marel.ducksProcessed+=score;
+    if(score>state.marel.bestScore) state.marel.bestScore=score;
+    const gains={money:Math.round(score*1.5)};
+    if(score>=10) gains.happiness=8;
+    if(score>=15) gains.sex=5;
+    if(state.character==='dabbi') { gains.money=Math.round(gains.money*1.5); } // Dabbi bonus
+    applyGains(gains); saveGame();
+    const resultEl=el.querySelector('.ev-result');
+    resultEl.style.display='';
+    resultEl.innerHTML=`
+      <div class="ev-result-icon">${score>=10?'🎉':'🦆'}</div>
+      <div class="ev-result-title ${score>=10?'success':'fail'}">${score>=10?'Frábært!':'Sæmilegt...'}</div>
+      <div class="ev-result-text">${score} endur veiddar! ${state.character==='dabbi'?'Dabbi fær bónus!':''}</div>
+      <div class="ev-gains">${gainsHtml(gains)}</div>
+      <button class="ev-btn" id="marel-again">🦆 Reyna aftur</button><br>
+      <button class="ev-btn secondary" id="marel-back" style="margin-top:0.3rem">← Aftur á kort</button>
+    `;
+    resultEl.querySelector('#marel-again').addEventListener('click',()=>this.onEnter());
+    resultEl.querySelector('#marel-back').addEventListener('click',()=>goScene('mapView'));
+  }
+});
+
+// ===== GOLF MINI-GAME =====
+registerScene('golfGame', {
+  _phase:'club', _club:null, _power:0, _aim:0, _powerAnim:null, _aimAnim:null, _locId:null,
+  create() {
+    const el=document.createElement('div'); el.className='event-scene';
+    el.innerHTML=`
+      <button class="ev-back">← Kort</button>
+      <div class="ev-icon">⛳</div>
+      <div class="ev-title">Golf</div>
+      <div class="ev-sub"></div>
+      <div class="golf-content" style="width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:0.5rem;"></div>
+    `;
+    el.querySelector('.ev-back').addEventListener('click',()=>{this._stopAnims();goScene('mapView');});
+    return el;
+  },
+  onEnter(data) {
+    this._locId=data?.locId||'golf-hermir';
+    this._phase='club'; this._power=0; this._aim=0;
+    this._stopAnims();
+    const loc=LOCATIONS[this._locId];
+    this.el.querySelector('.ev-sub').textContent=loc?loc.name:'Golf æfing';
+    // Add instructions
+    const existingHint=this.el.querySelector('.golf-hint');
+    if(existingHint) existingHint.remove();
+    const hint=document.createElement('div');
+    hint.className='golf-hint';
+    hint.style.cssText='font-size:0.72rem;color:#475569;text-align:center;max-width:320px;line-height:1.4;';
+    hint.textContent='🏌️ Veldu kylfu → stilltu kraft → stilltu stefnu. Smelltu á réttum tíma til að ná besta skori!';
+    this.el.querySelector('.ev-title').after(hint);
+    this._showClubSelect();
+  },
+  _stopAnims() { if(this._powerAnim) cancelAnimationFrame(this._powerAnim); if(this._aimAnim) cancelAnimationFrame(this._aimAnim); },
+  _showClubSelect() {
+    const content=this.el.querySelector('.golf-content');
+    content.innerHTML=`
+      <div class="ev-card" style="text-align:center">
+        <div class="ev-text">Veldu kylfu:</div>
+        <div style="display:flex;gap:0.5rem;justify-content:center;">
+          <button class="ev-choice golf-club" data-club="driver" style="flex:1;text-align:center">🏌️ Driver<br><span style="font-size:0.65rem;color:#64748B">Langt en ónákvæmt</span></button>
+          <button class="ev-choice golf-club" data-club="iron" style="flex:1;text-align:center">🏌️ Iron<br><span style="font-size:0.65rem;color:#64748B">Meðalvegalengd</span></button>
+          <button class="ev-choice golf-club" data-club="putter" style="flex:1;text-align:center">🏌️ Putter<br><span style="font-size:0.65rem;color:#64748B">Stutt en nákvæmt</span></button>
+        </div>
+      </div>
+    `;
+    content.querySelectorAll('.golf-club').forEach(btn=>{
+      btn.addEventListener('click',()=>{ this._club=btn.dataset.club; this._showPower(); });
+    });
+  },
+  _showPower() {
+    const content=this.el.querySelector('.golf-content');
+    const targetPower=this._club==='driver'?75:this._club==='iron'?55:35;
+    content.innerHTML=`
+      <div class="ev-card" style="text-align:center">
+        <div class="ev-text">⚡ Kraftur — stöðvaðu stikuna á hvíta merkinu!</div>
+        <div class="golf-power-wrap">
+          <div class="golf-power-target" style="left:${targetPower}%"></div>
+          <div class="golf-power-bar" style="background:linear-gradient(90deg,#10B981,#F59E0B,#EF4444)"></div>
+        </div>
+        <button class="ev-btn" id="golf-power-btn">💥 HÖGG!</button>
+      </div>
+    `;
+    const bar=content.querySelector('.golf-power-bar');
+    let pos=0, dir=1, speed=this._club==='driver'?2.5:this._club==='iron'?2:1.5;
+    const animate=()=>{
+      pos+=dir*speed;
+      if(pos>=100||pos<=0) dir*=-1;
+      bar.style.width=pos+'%';
+      this._powerAnim=requestAnimationFrame(animate);
+    };
+    this._powerAnim=requestAnimationFrame(animate);
+    content.querySelector('#golf-power-btn').addEventListener('click',()=>{
+      this._stopAnims();
+      this._power=parseFloat(bar.style.width);
+      this._showAim();
+    });
+  },
+  _showAim() {
+    const content=this.el.querySelector('.golf-content');
+    content.innerHTML=`
+      <div class="ev-card" style="text-align:center">
+        <div class="ev-text">🎯 Stefna — stöðvaðu nálina í miðjunni!</div>
+        <div class="golf-aim-wrap">
+          <div class="golf-aim-center"></div>
+          <div class="golf-aim-needle"></div>
+        </div>
+        <button class="ev-btn" id="golf-aim-btn">🎯 STEFNA!</button>
+      </div>
+    `;
+    const needle=content.querySelector('.golf-aim-needle');
+    let pos=0, dir=1, speed=this._club==='driver'?3:this._club==='iron'?2.5:1.5;
+    speed+=state.golfSkill>5?-0.3:0; // Better with practice
+    const animate=()=>{
+      pos+=dir*speed;
+      if(pos>=100||pos<=0) dir*=-1;
+      needle.style.left=pos+'%';
+      this._aimAnim=requestAnimationFrame(animate);
+    };
+    this._aimAnim=requestAnimationFrame(animate);
+    content.querySelector('#golf-aim-btn').addEventListener('click',()=>{
+      this._stopAnims();
+      this._aim=parseFloat(needle.style.left);
+      this._showGolfResult();
+    });
+  },
+  _showGolfResult() {
+    const content=this.el.querySelector('.golf-content');
+    // Calculate score: power accuracy + aim accuracy
+    const targetPower=this._club==='driver'?75:this._club==='iron'?55:35;
+    const powerAcc=100-Math.abs(this._power-targetPower)*2;
+    const aimAcc=100-Math.abs(this._aim-50)*2;
+    const totalScore=Math.round((powerAcc+aimAcc)/2);
+    const charBonus=state.character==='thor'?8:state.character==='dabbi'?5:0;
+    const finalScore=Math.min(100,totalScore+charBonus+state.golfSkill);
+
+    // Golf training tracked via golfSkill
+    state.golfSkill=Math.min(20,state.golfSkill+2);
+    const gains={};
+    if(finalScore>=80) { gains.happiness=12; gains.money=8; gains.emotional=5; }
+    else if(finalScore>=60) { gains.happiness=8; gains.money=5; }
+    else if(finalScore>=40) { gains.happiness=4; }
+    else { gains.happiness=-3; gains.emotional=-2; }
+    applyGains(gains); saveGame();
+
+    const grade=finalScore>=80?'🏆 Birdie!':finalScore>=60?'✅ Par':finalScore>=40?'😐 Bogey':'💀 Þrjú yfir par';
+    content.innerHTML=`
+      <div style="text-align:center">
+        <div style="font-size:3rem">${finalScore>=60?'⛳':'🏌️'}</div>
+        <div class="ev-result-title ${finalScore>=60?'success':'fail'}">${grade}</div>
+        <div class="ev-result-text">Skor: ${finalScore}/100 ${charBonus?`(+${charBonus} persónubónus)`:''} ${state.golfSkill>2?`(+${state.golfSkill-2} æfingabónus)`:''}</div>
+        <div style="display:flex;gap:0.5rem;justify-content:center;margin:0.5rem 0;">
+          <div style="background:var(--bg-card);border-radius:8px;padding:6px 12px;font-size:0.8rem;color:#94A3B8">💪 Kraftur: ${Math.round(this._power)}%</div>
+          <div style="background:var(--bg-card);border-radius:8px;padding:6px 12px;font-size:0.8rem;color:#94A3B8">🎯 Stefna: ${Math.round(this._aim)}%</div>
+        </div>
+        <div class="ev-gains">${gainsHtml(gains)}</div>
+        <div style="font-size:0.75rem;color:#64748B;margin:0.3rem 0">⛳ Golf skill: ${state.golfSkill}</div>
+        <button class="ev-btn" id="golf-again">⛳ Spila aftur</button><br>
+        <button class="ev-btn secondary" id="golf-back" style="margin-top:0.3rem">← Aftur á kort</button>
+      </div>
+    `;
+    content.querySelector('#golf-again').addEventListener('click',()=>this.onEnter({locId:this._locId}));
+    content.querySelector('#golf-back').addEventListener('click',()=>goScene('mapView'));
+  }
+});
+
+// ===== WEEK SUMMARY (disabled — one-session game) =====
+/*registerScene('weekSummary_DISABLED', {
+  create() {
+    const el=document.createElement('div'); el.className='week-summary scene';
+    el.innerHTML=`<div class="week-num"></div><div class="week-act"></div><div style="font-size:0.72rem;color:#475569;max-width:320px;text-align:center;line-height:1.4">📅 Vikan er liðin. Hér sérðu stöðuna þína. Haltu áfram til að fá ný 3 AP næstu viku.</div><div class="week-stats"></div><div class="week-event"></div><div class="week-quest" style="display:none"></div><button class="ev-btn" id="week-next">Næsta vika →</button>`;
+    el.querySelector('#week-next').addEventListener('click',()=>{
+      state.week++; state.ap=state.maxAp;
+      // Random weekly decay
+      const decay=STAT_KEYS[Math.floor(Math.random()*STAT_KEYS.length)];
+      addStat(decay,-Math.round(2+Math.random()*3));
+      saveGame();
+      if(state.week>24) goScene('ending',{type:checkManchester()?'epic':'skilnadur'});
+      else goScene('mapView');
+    });
+    return el;
+  },
+  onEnter() {
+    const el=this.el;
+    const MONTHS=['','Apríl','Apríl','Apríl','Apríl','Maí','Maí','Maí','Maí','Júní','Júní','Júní','Júní','Júlí','Júlí','Júlí','Júlí','Ágúst','Ágúst','Ágúst','Ágúst','September','September','September','September'];
+    el.querySelector('.week-num').textContent=`Vika ${state.week} — ${MONTHS[state.week]||''}`;
+    el.querySelector('.week-act').textContent=getActName();
+    el.querySelector('.week-stats').innerHTML=STAT_META.map(s=>`
+      <div class="week-stat">
+        <div class="week-stat__val">${s.icon} ${state.stats[s.key]}%</div>
+        <div class="week-stat__label">${s.label}</div>
+      </div>
+    `).join('');
+    // Weekly events
+    const events=[
+      'Veðrið var gott í vikunni. Allir eru í góðu skapi.',
+      'Regn og rok — en stemmingin er samt góð.',
+      'Einhver heyrðist segja „Er þetta virkilega síðasta ferðin?"',
+      'Benni stóri stjóri sendi myndband af sér á golfvelli.',
+      'WhatsApp rásin var heitari en venjulega.',
+      'Mundi sendi kameldýra-meme á hópinn.',
+      'Geiri Nikk spilaði Song 2 á endurteknu í þrjá daga.',
+      'Bíla-Ásgeir svaraði loksins í símann — en það var óvart.',
+      'Thor datt í hraungíg á æfingu. Öll klappuðu.',
+      'Lena fann stafsetningarvillu í fréttum.',
+      'Alli sagði: „Rannsóknirnar sýna..." og allir grúfuðu.',
+      'Dabbi biður til guðs um betra skor næsta skipti.',
+    ];
+    el.querySelector('.week-event').textContent=events[Math.floor(Math.random()*events.length)];
+    // Quest progress hint
+    const questEl=el.querySelector('.week-quest');
+    const qCount=Object.values(state.quests).filter(v=>v===true).length;
+    const allReady=checkManchester();
+    if(allReady) {
+      questEl.style.display=''; questEl.textContent='🏆 MANCHESTER ER TILBÚIÐ! Allir kostir yfir 80% og golf skill nóg!';
+    } else if(getAct()>=2) {
+      questEl.style.display='';
+      const hints=[];
+      STAT_KEYS.forEach(k=>{ if(state.stats[k]<80) hints.push(`${STAT_ICONS[k]} ${k}: ${state.stats[k]}% (þarf 80%)`); });
+      if(state.quests.golfTraining<2) hints.push(`⛳ Golf æfing: ${state.quests.golfTraining}/2`);
+      questEl.innerHTML='📋 Til Manchester þarftu:<br>'+hints.join('<br>');
+    } else { questEl.style.display='none'; }
+  }
+});*/
+
+// ===== ENDING SCENE =====
+registerScene('ending', {
+  create() {
+    const el=document.createElement('div'); el.className='ending-scene';
+    el.innerHTML=`<div class="ending-icon"></div><div class="ending-title"></div><div class="ending-text" style="white-space:pre-line"></div><div class="ending-stats" style="width:100%;max-width:380px;"></div><button class="ev-btn" id="ending-restart" style="width:100%;max-width:380px;">🔄 Spila aftur</button>`;
+    el.querySelector('#ending-restart').addEventListener('click',()=>{
+      localStorage.removeItem('bva-save');
+      Object.assign(state,{team:null,character:null,currentLocation:null,currentMap:null,
+        stats:{emotional:30,money:20,happiness:35,sex:15},visitedLocations:[],golfSkill:0,
+        fossvogur:{jerseysSold:0,level:1,landrad:0,visits:0,ownTeamSold:0,otherTeamSold:0},
+        marel:{ducksProcessed:0,bestScore:0}});
+      goScene('mainMenu');
+    });
+    return el;
+  },
+  onEnter(data) {
+    const el=this.el;
+    const char=CHARACTERS.find(c=>c.id===state.character);
+    const score=getTotalScore();
+    const visited=state.visitedLocations.length;
+    const total=Object.keys(LOCATIONS).length;
+    const manchester=score>=300;
+
+    // Icon & title
+    el.querySelector('.ending-icon').textContent=manchester?'🏆⛳':'😔⛳';
+    const titleEl=el.querySelector('.ending-title');
+    if(manchester) {
+      titleEl.textContent='MANCHESTER! Þú komst!';
+      titleEl.style.color='var(--aeland-primary)';
+    } else if(score>=200) {
+      titleEl.textContent='Svo nálægt...';
+      titleEl.style.color='#EF4444';
+    } else {
+      titleEl.textContent='Ferðin mistókst';
+      titleEl.style.color='#64748B';
+    }
+
+    // Story text
+    const texts={
+      win:`${char?.name||'Þú'} og liðið komuðust til Manchester!\n\nEftir ótal áskoranir, treyjusölu í Fossvogi, endaveiðar á Marel, og golf á hrauni — LOKSINS standið þið á golfvelli í Manchester.\n\nÞetta var SÍÐASTA golfferðin. Og hún var EPIC.\nAllir vita: eftir þetta verður ekkert eins. En minningarnar vara að eilífu.`,
+      close:`${char?.name||'Þú'} var svo nálægt Manchester!\n\nSkorið náði ekki alveg til — en ferðin var samt ótrúleg. Reyndu aftur og gerðu betri val á staðinum.`,
+      fail:`Ferðin til Manchester varð aldrei að veruleika.\n\n${char?.name||'Þú'} hélt þó áfram að selja treyjur í Fossvogi.\nKannski kemur önnur golfferð... eða hvað?`
+    };
+    el.querySelector('.ending-text').textContent=manchester?texts.win:score>=200?texts.close:texts.fail;
+
+    // Score breakdown
+    el.querySelector('.ending-stats').innerHTML=`
+      <div style="background:var(--bg-card);border-radius:var(--radius);padding:1rem;margin:0.5rem 0;">
+        <div style="text-align:center;margin-bottom:0.8rem;">
+          <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:2.5rem;color:${manchester?'var(--aeland-primary)':'#E2E8F0'}">${score}</div>
+          <div style="font-size:0.8rem;color:#64748B;">af 400 stigum ${manchester?'— MANCHESTER! 🎉':'— þarf 300 fyrir Manchester'}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          ${STAT_META.map(s=>`
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:8px;text-align:center;">
+              <div style="font-size:1.3rem">${s.icon}</div>
+              <div style="font-family:'Fredoka',sans-serif;font-weight:700;color:#E2E8F0;font-size:1.1rem;">${state.stats[s.key]}%</div>
+              <div style="font-size:0.65rem;color:#64748B">${s.label}</div>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:0.7rem;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+          <span style="font-size:0.75rem;background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:8px;color:#94A3B8">🗺️ ${visited}/${total} staðir</span>
+          <span style="font-size:0.75rem;background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:8px;color:#94A3B8">⛳ Golf: ${state.golfSkill}</span>
+          <span style="font-size:0.75rem;background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:8px;color:#94A3B8">👕 Treyjur: ${state.fossvogur.jerseysSold}</span>
+          <span style="font-size:0.75rem;background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:8px;color:#94A3B8">🦆 Endur: ${state.marel.ducksProcessed}</span>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:0.8rem;color:#475569;margin-bottom:0.3rem;">💡 Deildu skorinu og keppu við vini!</div>
+    `;
+  }
+});
+
 // ===== INIT =====
-document.addEventListener('dblclick', e => e.preventDefault());
-localStorage.removeItem('bva-save');
+document.addEventListener('dblclick',e=>e.preventDefault());
+localStorage.removeItem('bva-save'); // Dev mode: fresh start
 try {
   goScene('mainMenu');
-  console.log('Game initialized OK');
+  console.log('Búland vs. Æland — Game initialized OK');
 } catch(e) {
-  console.error('INIT ERROR:', e);
-  document.body.style.background = '#fff';
-  document.body.style.color = '#000';
-  document.body.innerHTML = '<div style="padding:2rem;font-family:monospace;"><h2>Villa!</h2><pre>' + e.message + '\n' + e.stack + '</pre></div>';
+  console.error('INIT ERROR:',e);
+  document.body.style.background='#fff'; document.body.style.color='#000';
+  document.body.innerHTML='<div style="padding:2rem;font-family:monospace;"><h2>Villa!</h2><pre>'+e.message+'\n'+e.stack+'</pre></div>';
 }
 </script>
 </body>
