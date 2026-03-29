@@ -326,6 +326,40 @@ html, body {
 .grn-combo.show { opacity:1; animation:grn-combo-pop 0.3s ease; }
 @keyframes grn-combo-pop { 0%{transform:scale(0.5)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
 
+/* === APEROL SPRITZ MINIGAME === */
+.apr-area { width:100%; max-width:380px; display:flex; flex-direction:column; align-items:center; gap:0.5rem; }
+.apr-glass-wrap { position:relative; width:120px; height:200px; margin:0 auto; }
+.apr-glass { width:100%; height:100%; border-radius:8px 8px 30px 30px; border:3px solid rgba(255,255,255,0.2); background:linear-gradient(180deg,transparent 0%,transparent 100%); position:relative; overflow:hidden; }
+.apr-liquid { position:absolute; bottom:0; left:0; right:0; transition:height 0.15s; border-radius:0 0 27px 27px; }
+.apr-liquid-aperol { background:linear-gradient(180deg,#FF6B35,#E85D26); z-index:1; }
+.apr-liquid-champ { background:linear-gradient(180deg,#F5D76E,#F0C040); z-index:2; mix-blend-mode:screen; }
+.apr-liquid-mixed { position:absolute; bottom:0; left:0; right:0; border-radius:0 0 27px 27px; z-index:3; pointer-events:none; }
+.apr-ice { position:absolute; top:15%; left:50%; transform:translateX(-50%); font-size:1.5rem; z-index:4; opacity:0.7; }
+.apr-bubbles { position:absolute; inset:0; z-index:4; pointer-events:none; overflow:hidden; }
+.apr-bubble { position:absolute; width:4px; height:4px; background:rgba(255,255,255,0.5); border-radius:50%; animation:apr-rise 2s ease-in infinite; }
+@keyframes apr-rise { 0%{transform:translateY(0);opacity:0.6} 100%{transform:translateY(-180px);opacity:0} }
+.apr-bottles { display:flex; gap:1.5rem; justify-content:center; margin-top:0.3rem; }
+.apr-bottle { display:flex; flex-direction:column; align-items:center; gap:0.3rem; }
+.apr-pour-btn { width:90px; height:90px; border-radius:50%; border:3px solid rgba(255,255,255,0.15); font-size:2.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.2s; user-select:none; -webkit-user-select:none; }
+.apr-pour-btn:active { transform:scale(0.92); }
+.apr-pour-btn.aperol { background:linear-gradient(135deg,#FF6B35,#CC4E1A); box-shadow:0 4px 15px rgba(255,107,53,0.4); }
+.apr-pour-btn.champ { background:linear-gradient(135deg,#F5D76E,#D4A843); box-shadow:0 4px 15px rgba(245,215,110,0.4); }
+.apr-pour-btn.pouring { animation:apr-pour-pulse 0.3s ease infinite alternate; }
+@keyframes apr-pour-pulse { 0%{transform:scale(0.92);box-shadow:0 2px 8px rgba(0,0,0,0.3)} 100%{transform:scale(1);box-shadow:0 6px 20px rgba(255,107,53,0.5)} }
+.apr-pour-label { font-family:'Fredoka',sans-serif; font-size:0.7rem; font-weight:600; color:#8899B0; }
+.apr-ratio-wrap { width:80%; max-width:300px; display:flex; flex-direction:column; align-items:center; gap:3px; }
+.apr-ratio-bar { width:100%; height:12px; background:var(--bg-card); border-radius:6px; overflow:hidden; display:flex; }
+.apr-ratio-a { height:100%; background:#FF6B35; transition:width 0.2s; }
+.apr-ratio-c { height:100%; background:#F5D76E; transition:width 0.2s; }
+.apr-ratio-label { font-family:'Fredoka',sans-serif; font-size:0.65rem; color:#8899B0; }
+.apr-target { text-align:center; font-family:'Fredoka',sans-serif; font-size:0.75rem; color:#E8A030; margin-top:0.15rem; }
+.apr-perfect { font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.1rem; color:#3D7A4A; opacity:0; transition:opacity 0.3s; text-align:center; }
+.apr-perfect.show { opacity:1; animation:apr-perfect-pop 0.5s ease; }
+@keyframes apr-perfect-pop { 0%{transform:scale(0.5)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
+.apr-thor { font-size:2.5rem; text-align:center; }
+.apr-thor.happy { animation:apr-thor-dance 0.5s ease; }
+@keyframes apr-thor-dance { 0%{transform:rotate(0)} 25%{transform:rotate(-10deg)} 75%{transform:rotate(10deg)} 100%{transform:rotate(0)} }
+
 /* === WEEK SUMMARY === */
 .week-summary {
   background:linear-gradient(160deg,#1A2744 0%,#2B4570 40%,#1A2744 100%);
@@ -423,7 +457,7 @@ const LOCATIONS = {
   'macron-budin':   { id:'macron-budin',   name:'Macron búðin',        map:'buland', icon:'🇫🇷', color:'#1976D2', desc:'Íþróttavöruverslun Dóra. Verðstríð!', boost:{money:8,emotional:4} },
   'golf-hermir':    { id:'golf-hermir',    name:'Golf hermir',         map:'buland', icon:'🏌️', color:'#2E7D32', desc:'Golf-simulator. Premium æfing!', boost:{money:10} },
   'whatsapp-rasin': { id:'whatsapp-rasin', name:'WhatsApp rásin',      map:'buland', icon:'🌲', color:'#1B5E20', desc:'Hópsamtal hópsins. Drama challenges!', boost:{emotional:12} },
-  'gradibaer':      { id:'gradibaer',      name:'Graðibær',            map:'buland', icon:'🏪', color:'#795548', desc:'Miðbær Búlands, shops og NPC samskipti.', boost:{money:5,happiness:5} },
+  'gradibaer':      { id:'gradibaer',      name:'Graðibær',            map:'buland', icon:'🍹', color:'#FF6B35', desc:'Aperol Bar! Thor blandar Spritz-a.', boost:{happiness:8,sex:6}, special:true },
   'macron-budin-2': { id:'macron-budin-2', name:'Macron búðin II',     map:'buland', icon:'🧙', color:'#7E57C2', desc:'Keppinautinn! Quests og power-ups.', boost:{emotional:6,happiness:6} },
   'fossvogur':      { id:'fossvogur',      name:'Fossvogur',           map:'buland', icon:'🏠', color:'#E8732A', desc:'SIGNATURE: Seldu treyjur húsmæðrum!', boost:{sex:8,money:8}, special:true },
   'hraunid':        { id:'hraunid',        name:'Hraunið',             map:'buland', icon:'💰', color:'#FFC107', desc:'Golfvöllur á hrauni. Bolti í gjá, vindur af hafi.', boost:{money:10} },
@@ -599,14 +633,7 @@ function getLocationEvent(locId) {
       { text:'Finna raunverulegan sökudólg.', outcome:{emotional:10,money:5,happiness:3}, resultText:'Þú greinir stafsetningarvilluna! Hún afhjúpar svindlara sem reyndi að skipta um liði. Allir eru þakklátir.' },
     ]
   },
-  'gradibaer': {
-    text:`Graðibær — miðbær Búlands! Shops, NPC samskipti, og stemming. Leynigestir eru séðir hérna stundum — random manneskjur sem enginn þekkir en bjarga alltaf deginum.`,
-    choices:[
-      { text:'Versla og fá tilboð.', outcome:{money:6,happiness:7}, resultText:'Góð tilboð! Þú finnur jafnvel ódýra golfkylfu sem virkar betur en dýrar.' },
-      { text:'Tala við NPC-a á kaffihúsinu.', outcome:{emotional:5,happiness:5,sex:4}, resultText:'Skemmtilegt samtal yfir kaffi. Einn NPC gefur þér leynilegan gossip um andstæðingana.' },
-      { text:'Leita að Leynigestunum.', outcome:{happiness:4,emotional:4,money:4,sex:4}, resultText:'Þú finnur mann í röngum skóm sem segir: „Hæ, veistu hvað, ég þekki nákvæmlega manninn sem getur lagað þetta."' },
-    ]
-  },
+  'gradibaer': null, // Handled by Aperol Spritz mini-game
   'macron-budin-2': {
     text:`Macron búðin II — keppinautinn! Búðin er full af vörum á ódýru verði. Eigandinn viðurkennir: „Ég er búinn að leggja á mig." Hann vill sættast — eða berjast til enda.`,
     choices:[
@@ -943,6 +970,7 @@ function travelTo(el,locId) {
     if(locId==='fossvogur') { goScene('fossvogur'); return; }
     if(locId==='marel-factory') { goScene('marelFactory'); return; }
     if(locId==='graenland') { goScene('graenlandParty'); return; }
+    if(locId==='gradibaer') { goScene('aperolSpritz'); return; }
     if(locId==='golf-hermir'||locId==='hraunid'||locId==='lokadur-golf') { goScene('golfGame',{locId}); return; }
     // Check for location event
     const ev=getLocationEvent(locId);
@@ -1431,6 +1459,223 @@ registerScene('graenlandParty', {
     `;
     resultEl.querySelector('#grn-again').addEventListener('click',()=>this.onEnter());
     resultEl.querySelector('#grn-back').addEventListener('click',()=>goScene('mapView'));
+  }
+});
+
+// ===== APEROL SPRITZ MINI-GAME =====
+registerScene('aperolSpritz', {
+  _aperol:0, _champ:0, _capacity:100, _pouring:null, _pourInterval:null, _done:false,
+  create() {
+    const el=document.createElement('div'); el.className='event-scene';
+    el.innerHTML=`
+      <button class="ev-back">← Kort</button>
+      <div class="ev-icon">🏪</div>
+      <div class="ev-title">Graðibær — Aperol Bar</div>
+      <div class="ev-sub">Blandaðu fullkominn Aperol Spritz!</div>
+      <div style="font-size:0.72rem;color:#8899B0;text-align:center;max-width:320px;line-height:1.4;">🍊 Haltu inni til að sturta Aperol og Kampavíni. Fullkomin blanda = 3 hlutar Aperol, 2 hlutar Kampavín. Ekki fylla of mikið!</div>
+      <div class="apr-area">
+        <div class="apr-thor" id="apr-thor">⚡</div>
+        <div class="apr-perfect" id="apr-perfect"></div>
+        <div class="apr-glass-wrap">
+          <div class="apr-glass">
+            <div class="apr-liquid apr-liquid-aperol" id="apr-liq-a" style="height:0%"></div>
+            <div class="apr-liquid apr-liquid-champ" id="apr-liq-c" style="height:0%"></div>
+            <div class="apr-liquid-mixed" id="apr-liq-mix"></div>
+            <div class="apr-ice">🧊</div>
+            <div class="apr-bubbles" id="apr-bubbles"></div>
+          </div>
+        </div>
+        <div class="apr-ratio-wrap">
+          <div class="apr-ratio-label">Aperol 🍊 vs Kampavín 🥂</div>
+          <div class="apr-ratio-bar">
+            <div class="apr-ratio-a" id="apr-ra" style="width:50%"></div>
+            <div class="apr-ratio-c" id="apr-rc" style="width:50%"></div>
+          </div>
+          <div class="apr-target">🎯 Markmið: 60% Aperol — 40% Kampavín</div>
+        </div>
+        <div class="apr-bottles">
+          <div class="apr-bottle">
+            <div class="apr-pour-btn aperol" id="apr-btn-a">🍊</div>
+            <div class="apr-pour-label">Aperol</div>
+          </div>
+          <div class="apr-bottle">
+            <div class="apr-pour-btn champ" id="apr-btn-c">🥂</div>
+            <div class="apr-pour-label">Kampavín</div>
+          </div>
+        </div>
+      </div>
+      <div class="ev-result" style="display:none" id="apr-result"></div>
+      <button class="ev-btn" id="apr-finish" style="display:none">🍹 Bera fram!</button>
+    `;
+    el.querySelector('.ev-back').addEventListener('click',()=>{this._stopPour();goScene('mapView');});
+
+    // Aperol button — hold to pour
+    const btnA=el.querySelector('#apr-btn-a');
+    const startA=(e)=>{ e.preventDefault(); this._startPour('aperol'); };
+    const stopA=(e)=>{ e.preventDefault(); this._stopPour(); };
+    btnA.addEventListener('mousedown',startA); btnA.addEventListener('touchstart',startA,{passive:false});
+    btnA.addEventListener('mouseup',stopA); btnA.addEventListener('mouseleave',stopA);
+    btnA.addEventListener('touchend',stopA); btnA.addEventListener('touchcancel',stopA);
+
+    // Champagne button — hold to pour
+    const btnC=el.querySelector('#apr-btn-c');
+    const startC=(e)=>{ e.preventDefault(); this._startPour('champ'); };
+    const stopC=(e)=>{ e.preventDefault(); this._stopPour(); };
+    btnC.addEventListener('mousedown',startC); btnC.addEventListener('touchstart',startC,{passive:false});
+    btnC.addEventListener('mouseup',stopC); btnC.addEventListener('mouseleave',stopC);
+    btnC.addEventListener('touchend',stopC); btnC.addEventListener('touchcancel',stopC);
+
+    el.querySelector('#apr-finish').addEventListener('click',()=>this._showResult());
+    return el;
+  },
+  onEnter() {
+    this._aperol=0; this._champ=0; this._done=false; this._pouring=null;
+    const el=this.el;
+    el.querySelector('#apr-liq-a').style.height='0%';
+    el.querySelector('#apr-liq-c').style.height='0%';
+    el.querySelector('#apr-liq-mix').style.background='';
+    el.querySelector('#apr-liq-mix').style.height='0%';
+    el.querySelector('#apr-ra').style.width='50%';
+    el.querySelector('#apr-rc').style.width='50%';
+    el.querySelector('#apr-finish').style.display='none';
+    el.querySelector('#apr-result').style.display='none';
+    el.querySelector('#apr-perfect').classList.remove('show');
+    el.querySelector('#apr-perfect').textContent='';
+    el.querySelector('#apr-thor').textContent='⚡';
+    el.querySelector('#apr-bubbles').innerHTML='';
+    el.querySelectorAll('.apr-pour-btn').forEach(b=>{b.classList.remove('pouring');b.style.display='';});
+    el.querySelectorAll('.apr-bottle').forEach(b=>b.style.display='');
+    el.querySelector('.apr-ratio-wrap').style.display='';
+    el.querySelector('.apr-area > div:nth-child(5)').style.display=''; // target text container
+  },
+  _startPour(type) {
+    if(this._done||this._pouring) return;
+    const total=this._aperol+this._champ;
+    if(total>=this._capacity) return;
+    this._pouring=type;
+    const el=this.el;
+    const btn=el.querySelector(type==='aperol'?'#apr-btn-a':'#apr-btn-c');
+    btn.classList.add('pouring');
+
+    this._pourInterval=setInterval(()=>{
+      const total=this._aperol+this._champ;
+      if(total>=this._capacity) { this._stopPour(); this._checkFinish(); return; }
+      if(type==='aperol') { this._aperol=Math.min(this._capacity-this._champ, this._aperol+2); }
+      else { this._champ=Math.min(this._capacity-this._aperol, this._champ+2); }
+      this._updateVisuals();
+      // Add bubbles when pouring champagne
+      if(type==='champ'&&Math.random()>0.5) this._addBubble();
+    },80);
+  },
+  _stopPour() {
+    if(this._pourInterval) { clearInterval(this._pourInterval); this._pourInterval=null; }
+    if(this._pouring) {
+      const el=this.el;
+      el.querySelector('#apr-btn-a').classList.remove('pouring');
+      el.querySelector('#apr-btn-c').classList.remove('pouring');
+      this._pouring=null;
+    }
+    this._checkFinish();
+  },
+  _addBubble() {
+    const bub=document.createElement('div');
+    bub.className='apr-bubble';
+    bub.style.left=Math.random()*90+5+'%';
+    bub.style.bottom='0';
+    bub.style.animationDuration=(1.5+Math.random()*1.5)+'s';
+    this.el.querySelector('#apr-bubbles').appendChild(bub);
+    setTimeout(()=>bub.remove(),3000);
+  },
+  _updateVisuals() {
+    const el=this.el;
+    const total=this._aperol+this._champ;
+    const fillPct=Math.min(100,(total/this._capacity)*100);
+    // Show mixed color in glass
+    const aH=(this._aperol/this._capacity)*100;
+    const cH=(this._champ/this._capacity)*100;
+    el.querySelector('#apr-liq-a').style.height=aH+'%';
+    el.querySelector('#apr-liq-c').style.height=cH+'%';
+    // Mixed overlay color
+    const mixEl=el.querySelector('#apr-liq-mix');
+    if(total>0) {
+      const ratio=this._aperol/total;
+      const r=Math.round(255*ratio+245*(1-ratio));
+      const g=Math.round(107*ratio+215*(1-ratio));
+      const b=Math.round(53*ratio+110*(1-ratio));
+      mixEl.style.background=`rgba(${r},${g},${b},0.85)`;
+      mixEl.style.height=fillPct+'%';
+    }
+    // Ratio bar
+    if(total>0) {
+      const aPct=(this._aperol/total)*100;
+      el.querySelector('#apr-ra').style.width=aPct+'%';
+      el.querySelector('#apr-rc').style.width=(100-aPct)+'%';
+    }
+    // Perfect indicator
+    const perfEl=el.querySelector('#apr-perfect');
+    const thorEl=el.querySelector('#apr-thor');
+    if(total>=30) {
+      const ratio=this._aperol/total;
+      const accuracy=100-Math.abs(ratio-0.6)*250; // 0.6 = 60% aperol is perfect
+      if(accuracy>=90) { perfEl.textContent='🎯 FULLKOMIÐ!'; perfEl.style.color='#3D7A4A'; thorEl.textContent='⚡😎'; }
+      else if(accuracy>=70) { perfEl.textContent='👍 Nálægt!'; perfEl.style.color='#E8A030'; thorEl.textContent='⚡🤔'; }
+      else { perfEl.textContent='😬 Blandað vitlaust...'; perfEl.style.color='#E04848'; thorEl.textContent='⚡😬'; }
+      perfEl.classList.add('show');
+    }
+  },
+  _checkFinish() {
+    const total=this._aperol+this._champ;
+    if(total>=20&&!this._done) {
+      this.el.querySelector('#apr-finish').style.display='';
+    }
+  },
+  _showResult() {
+    this._done=true; this._stopPour();
+    const el=this.el;
+    const total=this._aperol+this._champ;
+    const ratio=total>0?this._aperol/total:0;
+    // Perfect = 60% aperol, 40% champ (3:2 ratio)
+    const accuracy=Math.max(0, 100-Math.abs(ratio-0.6)*250);
+    const fillScore=Math.min(100,(total/this._capacity)*100);
+    // Score based on accuracy and fill
+    const finalScore=Math.round((accuracy*0.7)+(fillScore*0.3));
+
+    const gains={happiness:Math.round(finalScore*0.15), sex:Math.round(finalScore*0.1)};
+    if(finalScore>=80) { gains.emotional=8; gains.money=5; }
+    if(finalScore>=90) { gains.happiness+=5; gains.sex+=5; }
+    if(state.character==='thor') { gains.happiness=Math.round(gains.happiness*1.5); gains.sex=Math.round(gains.sex*1.5); }
+    applyGains(gains); saveGame();
+
+    // Hide game UI
+    el.querySelectorAll('.apr-pour-btn').forEach(b=>b.style.display='none');
+    el.querySelectorAll('.apr-bottle').forEach(b=>b.style.display='none');
+    el.querySelector('#apr-finish').style.display='none';
+    el.querySelector('.apr-ratio-wrap').style.display='none';
+
+    const great=finalScore>=80;
+    const perfect=finalScore>=90;
+    const thorEl=el.querySelector('#apr-thor');
+    thorEl.textContent=perfect?'⚡🥳':great?'⚡😎':'⚡😅';
+    thorEl.classList.add('happy');
+    setTimeout(()=>thorEl.classList.remove('happy'),500);
+
+    const resultEl=el.querySelector('#apr-result');
+    resultEl.style.display='';
+    resultEl.innerHTML=`
+      <div class="ev-result-icon">${perfect?'🍹✨':great?'🍹':'🥤'}</div>
+      <div class="ev-result-title ${great?'success':'fail'}">${perfect?'FULLKOMINN SPRITZ!':great?'Góður drinkur!':'Njaaa...'}</div>
+      <div class="ev-result-text">
+        Blanda: ${Math.round(ratio*100)}% Aperol / ${Math.round((1-ratio)*100)}% Kampavín
+        ${perfect?'— Thor segir: „ÞETTA er Aperol Spritz!"':great?'— Thor segir: „Sæmilegt, en ég hef gert betur."':'— Thor segir: „Þetta er eins og appelsínusafi með loftbólum."'}
+        Glasið ${Math.round(fillScore)}% fullt. Einkunn: ${finalScore}/100.
+        ${state.character==='thor'?'⚡ Thor fær bónus!':''}
+      </div>
+      <div class="ev-gains">${gainsHtml(gains)}</div>
+      <button class="ev-btn" id="apr-again">🍹 Reyna aftur</button><br>
+      <button class="ev-btn secondary" id="apr-back" style="margin-top:0.3rem">← Aftur á kort</button>
+    `;
+    resultEl.querySelector('#apr-again').addEventListener('click',()=>this.onEnter());
+    resultEl.querySelector('#apr-back').addEventListener('click',()=>goScene('mapView'));
   }
 });
 
